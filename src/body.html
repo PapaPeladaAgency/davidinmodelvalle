@@ -1,0 +1,170 @@
+<canvas id="c" aria-label="Residencial Valle de San Sebastián en 3D"></canvas>
+<div id="labels" aria-hidden="false"></div>
+<div id="roomTags" hidden></div>
+<div id="fade"></div>
+
+<header class="topbar">
+  <button class="brand" id="btnHome" title="Vista general">
+    <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="28" cy="11" r="5" fill="var(--sol)"/><path d="M2 32 Q12 20 20 27 T38 24 V38 H2Z" fill="var(--volcan)"/><path d="M9 26 L20 16 L31 26" fill="none" stroke="var(--anil)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="16" y="24" width="8" height="8" rx="1.2" fill="var(--anil)"/></svg>
+    <span class="brand-text"><span class="brand-name">Valle de San Sebastián</span><span class="brand-sub" data-i18n="brand.sub">Vivienda en El Salvador</span></span>
+    <span id="projName" hidden>Valle de San Sebastián</span>
+  </button>
+  <nav class="top-actions">
+    <span class="data-mode" id="dataMode" hidden>Iniciando…</span>
+    <button class="btn top lang-btn" id="btnLang" data-i18n="menu.lang">English</button>
+    <div class="menu-wrap">
+      <button class="btn top" id="btnMore" aria-haspopup="true" aria-expanded="false"><span data-i18n="menu.more">Más</span> ▾</button>
+      <div class="menu" id="moreMenu" hidden role="menu">
+        <button role="menuitem" id="btnTour" data-i18n="menu.tour">Presentación guiada</button>
+        <button role="menuitem" id="btnPlano" data-i18n="menu.plano">Ver plano original</button>
+        <button role="menuitem" id="btnPhoto" data-i18n="menu.photo">Modo foto</button>
+        <button role="menuitem" id="btnCompare" hidden>Comparar <span class="count" id="compareCount" hidden>0</span></button>
+        <button role="menuitem" id="btnAdmin" hidden data-i18n="menu.admin">Administración</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div id="emptyBanner" class="banner" hidden></div>
+
+<section id="hero" class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow" data-i18n="hero.eyebrow">Vivienda de interés social · El Salvador</p>
+    <h1>Valle de San Sebastián</h1>
+    <p class="lede" data-i18n="hero.lede"></p>
+    <ul class="promises"><li><b>1</b><span data-i18n="hero.p1"></span></li><li><b>2</b><span data-i18n="hero.p2"></span></li><li><b>3</b><span data-i18n="hero.p3"></span></li></ul>
+    <div class="hero-cta">
+      <button class="btn primary xl" id="cta" data-i18n="hero.cta">Explorá Valle de San Sebastián en 3D</button>
+      <button class="btn ghost-light" id="heroPlano" data-i18n="hero.plano">Ver plano original</button>
+    </div>
+    <div class="hero-stats" id="heroStats"></div>
+    <p class="disclaimer" data-i18n="hero.disc"></p>
+  </div>
+</section>
+
+<div id="loading" class="loading"><div class="load-card"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="28" cy="11" r="5" fill="var(--sol)"/><path d="M2 32 Q12 20 20 27 T38 24 V38 H2Z" fill="var(--volcan)"/><path d="M9 26 L20 16 L31 26" fill="none" stroke="var(--anil)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="16" y="24" width="8" height="8" rx="1.2" fill="var(--anil)"/></svg><b>Valle de San Sebastián</b><div class="load-bar"><i id="loadBar"></i></div><p id="loadMsg" data-i18n="load.1">Preparando el residencial…</p></div></div>
+
+<!-- ======= Vista del residencial ======= -->
+<div id="siteUI">
+  <div class="stage-bar" id="stageBar" role="group" aria-label="Etapas"></div>
+  <div class="explore-bar">
+    <button class="pill" id="btnFilters" aria-expanded="false">⚙ <span data-i18n="f.filters">Filtros</span> <span class="count" id="filterCount" hidden></span></button>
+    <button class="pill" id="btnLayers" aria-expanded="false">◧ <span data-i18n="f.layers">Capas</span></button>
+  </div>
+  <div class="panel pop filters-pop" id="filtersPop" hidden>
+    <label><span data-i18n="f.max">Precio máximo</span><select id="fMax"></select></label>
+    <label><span data-i18n="f.model">Modelo</span><select id="fModel"></select></label>
+    <label class="check"><input type="checkbox" id="fOnly"> <span data-i18n="f.only">Solo disponibles</span></label>
+    <p class="small" id="fResult"></p>
+    <button class="btn small ghost" id="fClear" data-i18n="f.clear">Quitar filtros</button>
+  </div>
+  <div class="panel pop site-tools" id="layersPop" hidden>
+    <div class="seg" role="group" aria-label="Colorear terrenos por">
+      <button class="chip" data-color-mode="real" aria-pressed="true">Realista</button>
+      <button class="chip" data-color-mode="stage" aria-pressed="false">Etapas</button>
+      <button class="chip" data-color-mode="status" aria-pressed="false">Disponibilidad</button>
+    </div>
+    <label class="tool"><input type="checkbox" id="illus" checked> Viviendas ilustrativas</label>
+    <label class="tool">Plano original <input type="range" id="overlayRange" min="0" max="100" value="0" aria-label="Opacidad del plano original superpuesto"></label>
+  </div>
+  <div class="legend" id="legend"></div>
+  
+  <aside id="explorer" class="panel explorer" hidden></aside>
+  <aside id="photoPanel" class="panel photo-panel" hidden aria-label="Modo foto">
+    <div class="ex-head"><h3>Modo foto</h3><button class="icon-btn" id="photoClose" aria-label="Cerrar modo foto">×</button></div>
+    <p class="small muted">Render generado en vivo desde el modelo 3D del residencial, con la misma distribución del plano.</p>
+    <h4>Toma</h4>
+    <div class="chips"><button class="chip" data-shot="aerea35">Aérea 35° del conjunto</button><button class="chip" data-shot="parque">Parque central</button><button class="chip" data-shot="comunal">Área comunal</button><button class="chip" data-shot="calle">Calle residencial</button></div>
+    <h4>Luz</h4>
+    <div class="chips"><button class="chip" data-tod="dia" aria-pressed="true">Mediodía</button><button class="chip" data-tod="dorada">Hora dorada</button></div>
+    <label class="check small"><input type="checkbox" id="photoDof" checked> Profundidad de campo ligera</label>
+    <button class="btn primary" id="photoCapture">Capturar imagen</button>
+    <p class="small muted">Podés girar o acercar la cámara antes de capturar. La imagen sale en alta resolución, sin la interfaz.</p>
+  </aside>
+  <div id="lotTags"></div>
+  <aside id="lotPanel" class="panel" hidden>
+    <button class="icon-btn" id="lotClose" aria-label="Cerrar ficha">×</button>
+    <div id="lotBody"></div>
+  </aside>
+</div>
+
+<nav class="tabbar" id="tabbar" aria-label="Secciones">
+  <button data-tab="explore" aria-current="page"><svg viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7z M3 7l9 5 9-5 M12 12v10"/></svg><span data-i18n="tab.explore">Explorar</span></button>
+  <button data-tab="houses"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7 M5 10v10h14V10 M10 20v-6h4v6"/></svg><span data-i18n="tab.houses">Casas</span></button>
+  <button data-tab="quota"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z M8 8h8 M8 12h2 M14 12h2 M8 16h2 M14 16h2"/></svg><span data-i18n="tab.quota">Mi cuota</span></button>
+  <button data-tab="favs"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg><span data-i18n="tab.favs">Favoritos</span><i class="dot-count" id="favCount" hidden></i></button>
+  <button data-tab="contact"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg><span data-i18n="tab.contact">Contacto</span></button>
+</nav>
+<aside class="sheet" id="sheet" hidden aria-live="polite"><div class="sheet-grip" id="sheetGrip"></div><button class="icon-btn" id="sheetClose" aria-label="Cerrar">×</button><div id="sheetBody"></div></aside>
+<a class="fab-whats" id="fabWhats" href="#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 32 32"><path fill="#fff" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.3-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.6.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.2 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.8.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
+
+<!-- ======= Vista de la vivienda ======= -->
+<div id="houseUI">
+  <div class="house-top">
+    <button class="btn" id="backToSite" data-i18n="h.back">← Volver</button>
+    <div class="house-title"><strong id="houseTitle"></strong><span id="houseSub"></span></div>
+    <label class="model-pick">Ver como <select id="modelSelect"></select></label>
+  </div>
+  <div class="mode-switch" role="group" aria-label="Modo de visualización">
+    <button data-hmode="exterior" aria-pressed="true"><b data-i18n="h.full">Casa completa</b><small data-i18n="h.fullS">Exterior con techo</small></button>
+    <button data-hmode="open"><b data-i18n="h.open">Casa abierta</b><small data-i18n="h.openS">Vista maqueta</small></button>
+    <button data-hmode="walk"><b data-i18n="h.walk">Recorrer</b><small data-i18n="h.walkS">Primera persona</small></button>
+  </div>
+  <div class="decor">
+    <span class="decor-label" data-i18n="h.decor">Decoración ilustrativa</span>
+    <div class="chips" id="decorChips"></div>
+    <span class="decor-label" data-i18n="h.env">Entorno</span>
+    <div class="chips"><button class="chip" data-maq="0" aria-pressed="true" data-i18n="h.nb">Vecindario</button><button class="chip" data-maq="1" aria-pressed="false" data-i18n="h.maq">Maqueta</button></div>
+  </div>
+  <p class="hint" id="openHint" hidden>Tocá un ambiente para ver su información y entrar directamente</p>
+  <aside id="roomCard" class="panel room" hidden>
+    <button class="icon-btn" id="roomClose" aria-label="Cerrar">×</button>
+    <h3 id="roomName"></h3>
+    <dl class="facts" id="roomFacts"></dl>
+    <h4>Mobiliario representado</h4>
+    <ul id="roomItems"></ul>
+    <button class="btn primary" id="roomEnter">Entrar a este ambiente</button>
+    <p class="muted small">Medidas de referencia del plano demostrativo.</p>
+  </aside>
+  <div id="walkHud" hidden>
+    <div class="walk-where"><span>Estás en</span><strong id="walkRoom">—</strong></div>
+    <div class="walk-help desktop-only">W A S D o flechas para caminar · arrastrá para mirar · Shift para ir más rápido</div>
+    <div id="joy" aria-label="Control de movimiento"><i></i></div>
+    <div class="walk-actions">
+      <div class="chips" id="roomJump"></div>
+      <div class="row"><button class="btn small" id="exitOutside">Salir al exterior</button><button class="btn small" id="walkOpen">Ver casa abierta</button></div>
+    </div>
+  </div>
+  <div class="house-actions">
+    <button class="btn" id="hCompare">♡</button>
+    <button class="btn" id="hFinance" data-i18n="tab.quota">Mi cuota</button>
+    <button class="btn" id="hLead" data-i18n="lot.whats">WhatsApp</button>
+    <button class="btn primary" id="hReserve" data-i18n="lot.reserve">Apartar</button>
+  </div>
+  <p class="house-note">Vivienda, distribución y mobiliario demostrativos. El mobiliario no está incluido en la venta.</p>
+</div>
+
+<!-- ======= Administración ======= -->
+<section id="admin" hidden aria-label="Panel de administración">
+  <div class="admin-head">
+    <div><h2>Administración</h2><p class="muted small" id="adminMode"></p></div>
+    <button class="btn" id="adminClose">Cerrar panel</button>
+  </div>
+  <div class="admin-tabs" id="adminTabs" role="tablist"></div>
+  <div class="admin-body" id="adminBody"></div>
+</section>
+
+<div id="tour" class="tour" hidden role="region" aria-label="Presentación guiada">
+  <div class="tour-top"><span class="tour-step" id="tourStep"></span><span class="tour-dots" id="tourDots"></span><button class="chip" id="tourAuto" aria-pressed="false">Avance automático</button><button class="icon-btn" id="tourExit" aria-label="Salir de la presentación">×</button></div>
+  <h3 id="tourTitle"></h3>
+  <p id="tourText"></p>
+  <div class="tour-nav"><button class="btn" id="tourPrev">Anterior</button><span class="small" data-i18n="tour.live">La aplicación sigue activa: podés tocar, girar o entrar en cualquier momento.</span><button class="btn primary" id="tourNext">Siguiente</button></div>
+</div>
+<div id="modal" class="modal" hidden>
+  <div class="modal-scrim" data-close></div>
+  <div class="modal-box" id="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle"></h2><button class="icon-btn" data-close aria-label="Cerrar">×</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>

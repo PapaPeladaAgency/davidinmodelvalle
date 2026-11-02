@@ -1,0 +1,15 @@
+{
+  "name": "Valle de San Sebastián",
+  "short_name": "Valle SS",
+  "description": "Elegí tu casa como si estuvieras ahí: residencial en 3D, cuota y apartado en línea.",
+  "lang": "es-SV",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3ece0",
+  "theme_color": "#2b3f8f",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
