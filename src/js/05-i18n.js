@@ -65,6 +65,7 @@ let LANG = (() => { try { return localStorage.getItem('vss-lang') || ((navigator
 function t(k, vars) { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.es[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.replace('{' + a + '}', b); return s; }
 function applyI18n(root = document) {
   root.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  root.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   root.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
   document.documentElement.lang = LANG;
 }

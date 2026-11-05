@@ -23,10 +23,24 @@ src/js/30-house.js    Vivienda generada desde JSON: muros con aberturas, pisos, 
 src/js/40-viewer.js   Visor: Casa completa / Casa abierta (Dollhouse, plano de corte) / Recorrer interior (colisiones)
 src/js/50-ui.js       Interfaz del visitante: etapas, ficha de lote, comparación, financiamiento, solicitud, plano original
 src/js/60-admin.js    Panel administrativo
+src/js/80-render-plus.js  N8AO y render por trazado de rayos
+src/js/82-live.js     Presentación en vivo compartida
+src/js/84-assistant.js  Asistente con IA
 src/js/90-main.js     Arranque, cámaras, interacción, navegación
 build.py              Ensambla todo en dist/index.html
 dist/plano-original.jpg  Imagen de referencia entregada
 ```
+
+## Plugins gratuitos que funcionan dentro de Claude
+
+| Plugin | Archivo | Qué hace |
+|---|---|---|
+| N8AO 2.0.1 + postprocessing 6.36.0 (MIT) | `src/js/80-render-plus.js` | Oclusión ambiental de mayor calidad que GTAO, en escritorio. Si no carga, se mantiene GTAO. |
+| three-gpu-pathtracer 0.0.23 + three-mesh-bvh 0.8.3 (MIT) | `src/js/80-render-plus.js` | Render fotorrealista progresivo (trazado de rayos) desde el Modo foto y desde la casa (botón «Render»). |
+| Capacidad `room` de Claude | `src/js/82-live.js` | Presentación en vivo: quien edita el artefacto presenta y los demás ven su cámara, lote, casa y luz. Cada visitante puede explorar por su cuenta. |
+| Capacidad `sample` de Claude | `src/js/84-assistant.js` | Asistente con IA que consulta el inventario con herramientas (buscar lotes, cuota, modelos, áreas) y mueve la cámara del 3D. Usa la cuenta de Claude de quien pregunta. |
+
+Las librerías se cargan con `import()` dinámico desde jsDelivr (versiones fijadas en `build.py`), así que un fallo de red no rompe el visor.
 
 ## Datos (colecciones)
 

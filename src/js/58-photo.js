@@ -141,12 +141,15 @@ const Photo = {
       document.body.classList.remove('capturing');
       btn.disabled = false; btn.textContent = 'Capturar imagen';
     }
+    this.showResult(url, Math.round(w * scale), Math.round(h * scale), 'Render demostrativo generado desde el modelo 3D del prototipo.', 'render');
+  },
+  async showResult(url, W, H, note, tag) {
     const blob = await (await fetch(url)).blob();
-    const name = `valle-san-sebastian-${Site.timeOfDay === 'dorada' ? 'hora-dorada' : 'dia'}-${new Date().toISOString().slice(0, 10)}.jpg`;
+    const name = `valle-san-sebastian-${tag}-${Site.timeOfDay === 'dorada' ? 'hora-dorada' : 'dia'}-${new Date().toISOString().slice(0, 10)}.jpg`;
     let saved = false;
     try { const dl = window.claude && await window.claude.use('downloads'); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } catch (e) { /* el visitante canceló o no está disponible */ }
     UI.modal('Imagen generada', `<div class="photo-result"><img src="${url}" alt="Render del residencial Valle de San Sebastián"></div>
-      <p class="muted small">${saved ? 'La imagen se ofreció para descargar.' : 'Mantené presionada la imagen (o clic derecho) para guardarla.'} Resolución: ${Math.round(w * scale)} × ${Math.round(h * scale)} px. Render demostrativo generado desde el modelo 3D del prototipo.</p>`, 'wide');
+      <p class="muted small">${saved ? 'La imagen se ofreció para descargar.' : 'Mantené presionada la imagen (o clic derecho) para guardarla.'} Resolución: ${W} × ${H} px. ${esc(note)}</p>`, 'wide');
   },
   init() {
     $('#btnPhoto').onclick = () => this.open();

@@ -18,6 +18,8 @@
         <button role="menuitem" id="btnTour" data-i18n="menu.tour">Presentación guiada</button>
         <button role="menuitem" id="btnPlano" data-i18n="menu.plano">Ver plano original</button>
         <button role="menuitem" id="btnPhoto" data-i18n="menu.photo">Modo foto</button>
+        <button role="menuitem" id="btnAI" hidden data-i18n="ai.btn">Asistente con IA</button>
+        <button role="menuitem" id="btnLive" hidden data-i18n="live.btn">Presentar en vivo</button>
         <button role="menuitem" id="btnCompare" hidden>Comparar <span class="count" id="compareCount" hidden>0</span></button>
         <button role="menuitem" id="btnAdmin" hidden data-i18n="menu.admin">Administración</button>
       </div>
@@ -26,6 +28,35 @@
 </header>
 
 <div id="emptyBanner" class="banner" hidden></div>
+
+<div id="liveBar" class="live-bar" hidden role="status">
+  <span class="live-dot" aria-hidden="true"></span><strong id="liveText"></strong>
+  <button class="btn small" id="liveFollow"></button>
+  <button class="btn small" id="liveStop" hidden data-i18n="live.stop">Terminar presentación</button>
+  <ul id="livePeers" class="live-peers" hidden></ul>
+</div>
+
+<div id="ptHud" class="pt-hud" hidden role="status">
+  <strong data-i18n="pt.title">Render fotorrealista</strong>
+  <span id="ptStatus"></span>
+  <progress id="ptProg" max="1" value="0"></progress>
+  <p class="small muted" data-i18n="pt.note">La imagen gana nitidez con cada muestra. Podés guardarla en cualquier momento.</p>
+  <div class="row"><button class="btn primary small" id="ptSave" data-i18n="pt.save">Guardar ahora</button><button class="btn small" id="ptCancel" data-i18n="pt.cancel">Cancelar</button></div>
+</div>
+
+<aside id="aiPanel" class="panel ai-panel" hidden aria-label="Asistente con IA">
+  <div class="ex-head"><h3 data-i18n="ai.title">Asistente con IA</h3><button class="icon-btn" id="aiClose" aria-label="Cerrar">×</button></div>
+  <p class="small muted" data-i18n="ai.sub">Pregunta por lotes, precios, cuotas o áreas comunes.</p>
+  <div id="aiLog" class="ai-log" aria-live="polite"></div>
+  <div id="aiChips" class="chips ai-chips"></div>
+  <form id="aiForm" class="ai-form">
+    <input id="aiInput" autocomplete="off" maxlength="500" data-i18n-ph="ai.ph" placeholder="Escribí tu pregunta…" aria-label="Pregunta">
+    <button class="btn small" type="button" id="aiStop" hidden data-i18n="ai.stop">Detener</button>
+    <button class="btn primary small" id="aiSend" data-i18n="ai.send">Enviar</button>
+  </form>
+  <p class="tiny muted" data-i18n="ai.disc">Respuestas generadas con IA sobre datos demostrativos.</p>
+</aside>
+<button class="fab-ai" id="fabAI" hidden aria-label="Asistente con IA"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/></svg><span data-i18n="ai.btn">Asistente con IA</span></button>
 
 <section id="hero" class="hero">
   <div class="hero-inner">
@@ -79,6 +110,7 @@
     <div class="chips"><button class="chip" data-tod="dia" aria-pressed="true">Mediodía</button><button class="chip" data-tod="dorada">Hora dorada</button></div>
     <label class="check small"><input type="checkbox" id="photoDof" checked> Profundidad de campo ligera</label>
     <button class="btn primary" id="photoCapture">Capturar imagen</button>
+    <button class="btn" id="photoPT" data-i18n="pt.btn">Render fotorrealista (trazado de rayos)</button>
     <p class="small muted">Podés girar o acercar la cámara antes de capturar. La imagen sale en alta resolución, sin la interfaz.</p>
   </aside>
   <div id="lotTags"></div>
@@ -137,6 +169,7 @@
   </div>
   <div class="house-actions">
     <button class="btn" id="hCompare">♡</button>
+    <button class="btn" id="hRender" title="Render fotorrealista (trazado de rayos)" data-i18n="pt.house">Render</button>
     <button class="btn" id="hFinance" data-i18n="tab.quota">Mi cuota</button>
     <button class="btn" id="hLead" data-i18n="lot.whats">WhatsApp</button>
     <button class="btn primary" id="hReserve" data-i18n="lot.reserve">Apartar</button>

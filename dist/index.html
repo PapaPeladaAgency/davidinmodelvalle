@@ -522,6 +522,44 @@ body.sheet-open .legend, body.sheet-open #explorer { display: none; }
   .stage-bar { top: calc(60px + env(safe-area-inset-top, 0px)); }
 }
 
+/* ===== Plugins dentro de Claude: asistente IA, presentación en vivo, render por trazado de rayos ===== */
+.tiny { font-size: 11px; }
+.fab-ai { position: fixed; z-index: 34; right: max(18px, env(safe-area-inset-right, 0px)); bottom: calc(164px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 16px 0 12px; border-radius: 23px; border: 0; background: var(--anil); color: var(--anil-ink); font-weight: 700; box-shadow: 0 8px 22px rgba(43,63,143,.35); cursor: pointer; }
+.fab-ai svg { width: 22px; height: 22px; fill: currentColor; }
+body:not([data-view]) .fab-ai, body.photo .fab-ai, body.touring .fab-ai, body.sheet-open .fab-ai, body.admin-open .fab-ai, body.ai-open .fab-ai, body.lot-open .fab-ai, body.pathtracing .fab-ai, body.walking .fab-ai { display: none; }
+body[data-view="house"] .fab-ai { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.ai-panel { right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: 380px; height: min(620px, calc(100% - 120px)); padding: 14px; display: flex; flex-direction: column; gap: 8px; z-index: 36; overflow: hidden; }
+.ai-panel h3 { margin: 0; font-family: var(--f-display); font-size: 20px; font-weight: 600; }
+.ai-panel p { margin: 0; }
+.ai-log { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; padding: 4px 2px; }
+.ai-msg { max-width: 90%; padding: 9px 12px; border-radius: 12px; line-height: 1.45; background: var(--paper-2); }
+.ai-msg p { margin: 0 0 6px; } .ai-msg p:last-child { margin: 0; }
+.ai-msg ul { margin: 4px 0; padding-left: 18px; }
+.ai-msg.user { align-self: flex-end; background: var(--anil); color: var(--anil-ink); border-bottom-right-radius: 4px; }
+.ai-msg.ai { align-self: flex-start; border-bottom-left-radius: 4px; }
+.ai-msg.sys { align-self: center; background: transparent; color: var(--muted); font-size: 12.5px; text-align: center; }
+.ai-msg.pending { color: var(--muted); font-style: italic; }
+.ai-lot { font: 600 12.5px var(--f-mono); padding: 1px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--paper); color: var(--anil); cursor: pointer; }
+.ai-chips { flex-wrap: wrap; }
+.ai-chips .chip { text-align: left; }
+.ai-form { display: flex; gap: 6px; }
+.ai-form input { flex: 1; min-width: 0; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.live-bar { position: fixed; z-index: 33; left: 50%; transform: translateX(-50%); top: calc(70px + env(safe-area-inset-top, 0px)); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 8px 10px 8px 14px; border-radius: 22px; background: var(--glass); border: 1px solid var(--line); box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+.live-dot { width: 10px; height: 10px; border-radius: 50%; background: #dc2626; box-shadow: 0 0 0 0 rgba(220,38,38,.6); animation: livePulse 1.6s infinite; }
+@keyframes livePulse { 70% { box-shadow: 0 0 0 9px rgba(220,38,38,0); } 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+.live-peers { flex-basis: 100%; margin: 0; padding: 0 0 2px; list-style: none; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.pt-hud { position: fixed; z-index: 40; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: min(360px, calc(100% - 32px)); padding: 14px; border-radius: 14px; background: var(--glass); border: 1px solid var(--line); box-shadow: var(--shadow); display: grid; gap: 6px; backdrop-filter: blur(8px); }
+.pt-hud p { margin: 0; }
+.pt-hud progress { width: 100%; height: 8px; accent-color: var(--anil); }
+body.pathtracing .topbar, body.pathtracing .tabbar, body.pathtracing #photoPanel, body.pathtracing #houseUI, body.pathtracing #lotPanel, body.pathtracing #lotTags, body.pathtracing #labels, body.pathtracing .fab-whats, body.pathtracing #stageBar, body.pathtracing .legend { visibility: hidden; }
+@media (max-width: 700px) {
+  .ai-panel { left: 0; right: 0; bottom: 0; width: auto; height: 78%; border-radius: 16px 16px 0 0; }
+  .fab-ai { bottom: calc(var(--tab-h) + 80px + env(safe-area-inset-bottom, 0px)); height: 44px; }
+  .fab-ai span { display: none; } .fab-ai { width: 52px; padding: 0; justify-content: center; }
+  .live-bar { top: calc(62px + env(safe-area-inset-top, 0px)); font-size: 12.5px; }
+}
+
 </style>
 <canvas id="c" aria-label="Residencial Valle de San Sebastián en 3D"></canvas>
 <div id="labels" aria-hidden="false"></div>
@@ -543,6 +581,8 @@ body.sheet-open .legend, body.sheet-open #explorer { display: none; }
         <button role="menuitem" id="btnTour" data-i18n="menu.tour">Presentación guiada</button>
         <button role="menuitem" id="btnPlano" data-i18n="menu.plano">Ver plano original</button>
         <button role="menuitem" id="btnPhoto" data-i18n="menu.photo">Modo foto</button>
+        <button role="menuitem" id="btnAI" hidden data-i18n="ai.btn">Asistente con IA</button>
+        <button role="menuitem" id="btnLive" hidden data-i18n="live.btn">Presentar en vivo</button>
         <button role="menuitem" id="btnCompare" hidden>Comparar <span class="count" id="compareCount" hidden>0</span></button>
         <button role="menuitem" id="btnAdmin" hidden data-i18n="menu.admin">Administración</button>
       </div>
@@ -551,6 +591,35 @@ body.sheet-open .legend, body.sheet-open #explorer { display: none; }
 </header>
 
 <div id="emptyBanner" class="banner" hidden></div>
+
+<div id="liveBar" class="live-bar" hidden role="status">
+  <span class="live-dot" aria-hidden="true"></span><strong id="liveText"></strong>
+  <button class="btn small" id="liveFollow"></button>
+  <button class="btn small" id="liveStop" hidden data-i18n="live.stop">Terminar presentación</button>
+  <ul id="livePeers" class="live-peers" hidden></ul>
+</div>
+
+<div id="ptHud" class="pt-hud" hidden role="status">
+  <strong data-i18n="pt.title">Render fotorrealista</strong>
+  <span id="ptStatus"></span>
+  <progress id="ptProg" max="1" value="0"></progress>
+  <p class="small muted" data-i18n="pt.note">La imagen gana nitidez con cada muestra. Podés guardarla en cualquier momento.</p>
+  <div class="row"><button class="btn primary small" id="ptSave" data-i18n="pt.save">Guardar ahora</button><button class="btn small" id="ptCancel" data-i18n="pt.cancel">Cancelar</button></div>
+</div>
+
+<aside id="aiPanel" class="panel ai-panel" hidden aria-label="Asistente con IA">
+  <div class="ex-head"><h3 data-i18n="ai.title">Asistente con IA</h3><button class="icon-btn" id="aiClose" aria-label="Cerrar">×</button></div>
+  <p class="small muted" data-i18n="ai.sub">Pregunta por lotes, precios, cuotas o áreas comunes.</p>
+  <div id="aiLog" class="ai-log" aria-live="polite"></div>
+  <div id="aiChips" class="chips ai-chips"></div>
+  <form id="aiForm" class="ai-form">
+    <input id="aiInput" autocomplete="off" maxlength="500" data-i18n-ph="ai.ph" placeholder="Escribí tu pregunta…" aria-label="Pregunta">
+    <button class="btn small" type="button" id="aiStop" hidden data-i18n="ai.stop">Detener</button>
+    <button class="btn primary small" id="aiSend" data-i18n="ai.send">Enviar</button>
+  </form>
+  <p class="tiny muted" data-i18n="ai.disc">Respuestas generadas con IA sobre datos demostrativos.</p>
+</aside>
+<button class="fab-ai" id="fabAI" hidden aria-label="Asistente con IA"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/></svg><span data-i18n="ai.btn">Asistente con IA</span></button>
 
 <section id="hero" class="hero">
   <div class="hero-inner">
@@ -604,6 +673,7 @@ body.sheet-open .legend, body.sheet-open #explorer { display: none; }
     <div class="chips"><button class="chip" data-tod="dia" aria-pressed="true">Mediodía</button><button class="chip" data-tod="dorada">Hora dorada</button></div>
     <label class="check small"><input type="checkbox" id="photoDof" checked> Profundidad de campo ligera</label>
     <button class="btn primary" id="photoCapture">Capturar imagen</button>
+    <button class="btn" id="photoPT" data-i18n="pt.btn">Render fotorrealista (trazado de rayos)</button>
     <p class="small muted">Podés girar o acercar la cámara antes de capturar. La imagen sale en alta resolución, sin la interfaz.</p>
   </aside>
   <div id="lotTags"></div>
@@ -662,6 +732,7 @@ body.sheet-open .legend, body.sheet-open #explorer { display: none; }
   </div>
   <div class="house-actions">
     <button class="btn" id="hCompare">♡</button>
+    <button class="btn" id="hRender" title="Render fotorrealista (trazado de rayos)" data-i18n="pt.house">Render</button>
     <button class="btn" id="hFinance" data-i18n="tab.quota">Mi cuota</button>
     <button class="btn" id="hLead" data-i18n="lot.whats">WhatsApp</button>
     <button class="btn primary" id="hReserve" data-i18n="lot.reserve">Apartar</button>
@@ -695,7 +766,11 @@ body.sheet-open .legend, body.sheet-open #explorer { display: none; }
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/","three/examples/jsm/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/",
+"postprocessing":"https://cdn.jsdelivr.net/npm/postprocessing@6.36.0/build/index.js",
+"n8ao":"https://cdn.jsdelivr.net/npm/n8ao@2.0.1/dist/N8AO.js",
+"three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.8.3/build/index.module.js",
+"three-gpu-pathtracer":"https://cdn.jsdelivr.net/npm/three-gpu-pathtracer@0.0.23/build/index.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -1009,6 +1084,7 @@ let LANG = (() => { try { return localStorage.getItem('vss-lang') || ((navigator
 function t(k, vars) { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.es[k] || k; if (vars) for (const [a, b] of Object.entries(vars)) s = s.replace('{' + a + '}', b); return s; }
 function applyI18n(root = document) {
   root.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  root.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   root.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
   document.documentElement.lang = LANG;
 }
@@ -1247,7 +1323,7 @@ const Site = {
   // Entorno permanente: suelo, cerros, volcán, carretera
   buildEnvironment() {
     const env = new THREE.Group(); this.scene.add(env);
-    buildMountains(env);
+    this.mountains = buildMountains(env);
     const gg = new THREE.PlaneGeometry(4200, 4200, 70, 70); gg.rotateX(-Math.PI / 2);
     const pos = gg.attributes.position, cols = [];
     const rnd = mulberry(7);
@@ -4627,12 +4703,15 @@ const Photo = {
       document.body.classList.remove('capturing');
       btn.disabled = false; btn.textContent = 'Capturar imagen';
     }
+    this.showResult(url, Math.round(w * scale), Math.round(h * scale), 'Render demostrativo generado desde el modelo 3D del prototipo.', 'render');
+  },
+  async showResult(url, W, H, note, tag) {
     const blob = await (await fetch(url)).blob();
-    const name = `valle-san-sebastian-${Site.timeOfDay === 'dorada' ? 'hora-dorada' : 'dia'}-${new Date().toISOString().slice(0, 10)}.jpg`;
+    const name = `valle-san-sebastian-${tag}-${Site.timeOfDay === 'dorada' ? 'hora-dorada' : 'dia'}-${new Date().toISOString().slice(0, 10)}.jpg`;
     let saved = false;
     try { const dl = window.claude && await window.claude.use('downloads'); if (dl) { await dl.save({ filename: name, data: blob }); saved = true; } } catch (e) { /* el visitante canceló o no está disponible */ }
     UI.modal('Imagen generada', `<div class="photo-result"><img src="${url}" alt="Render del residencial Valle de San Sebastián"></div>
-      <p class="muted small">${saved ? 'La imagen se ofreció para descargar.' : 'Mantené presionada la imagen (o clic derecho) para guardarla.'} Resolución: ${Math.round(w * scale)} × ${Math.round(h * scale)} px. Render demostrativo generado desde el modelo 3D del prototipo.</p>`, 'wide');
+      <p class="muted small">${saved ? 'La imagen se ofreció para descargar.' : 'Mantené presionada la imagen (o clic derecho) para guardarla.'} Resolución: ${W} × ${H} px. ${esc(note)}</p>`, 'wide');
   },
   init() {
     $('#btnPhoto').onclick = () => this.open();
@@ -5541,12 +5620,576 @@ Tour.go = async function (i) {
 };
 
 // ============================================================================
+// 80-render-plus.js — Librerías gratuitas que funcionan dentro de Claude
+//  · N8AO 2.0.1 (MIT): oclusión ambiental de mejor calidad que GTAO
+//  · three-gpu-pathtracer 0.0.23 (MIT): render fotorrealista por trazado de rayos
+// Ambas se cargan desde jsDelivr con import() dinámico: si fallan, el visor sigue
+// funcionando con GTAO y con la captura normal del Modo foto.
+// ============================================================================
+
+const AOPlus = {
+  engine: 'GTAO',
+  async upgrade() {
+    if (!App.composer || /noN8AO/.test(location.search)) return;
+    let mod;
+    try { mod = await import('n8ao'); } catch (e) { console.warn('N8AO no disponible, se mantiene GTAO', e); return; }
+    const swap = (composer, scene, cfg) => {
+      const rp = composer.passes[0], gt = composer.passes[1];
+      const n8 = new mod.N8AOPass(scene, App.camera, App.width, App.height);
+      Object.assign(n8.configuration, cfg, { gammaCorrection: false });
+      n8.setQualityMode(App.lowEnd ? 'Low' : 'Medium');
+      composer.insertPass(n8, 0); rp.enabled = false; gt.enabled = false;
+      // misma interfaz que usaba GTAO: activar o desactivar la oclusión
+      return { n8, get enabled() { return n8.enabled; }, set enabled(v) { n8.enabled = !!v; rp.enabled = !v; } };
+    };
+    try {
+      App.gtao = swap(App.composer, HouseViewer.scene, { aoRadius: 0.55, distanceFalloff: 0.45, intensity: 2.4, color: new THREE.Color('#1c1a17') });
+      App.siteGtao = swap(App.siteComposer, Site.scene, { aoRadius: 3.2, distanceFalloff: 1.2, intensity: 2.6 });
+      this.engine = 'N8AO';
+    } catch (e) { console.warn('N8AO falló al iniciar', e); }
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Render fotorrealista progresivo (path tracing)
+// ---------------------------------------------------------------------------
+const PathRender = {
+  active: false, preparing: false,
+  target() { return App.lowEnd ? 48 : 160; },
+
+  async start(kind = App.view === 'house' ? 'house' : 'site') {
+    if (this.active || this.preparing) return;
+    this.preparing = true; this.kind = kind;
+    const hud = $('#ptHud'); hud.hidden = false; document.body.classList.add('pathtracing');
+    this.status(t('pt.loading')); $('#ptProg').value = 0; $('#ptSave').disabled = true;
+    await new Promise(r => setTimeout(r, 50));
+    let mod;
+    try { mod = this.mod || (this.mod = await import('three-gpu-pathtracer')); }
+    catch (e) { console.warn(e); this.preparing = false; this.close(); UI.toast(t('pt.fail')); return; }
+    const controls = kind === 'house' ? App.houseControls : App.siteControls;
+    this.ctlWas = controls.enabled; controls.enabled = false; this.controls = controls;
+    try {
+      this.status(t('pt.prep')); await new Promise(r => setTimeout(r, 30));
+      const src = kind === 'house' ? HouseViewer.scene : Site.scene;
+      if (kind === 'site') { this.fdWas = Site.forceDetail; Site.forceDetail = true; Site.updateLOD(true); }
+      const center = controls.target.clone(), dist = App.camera.position.distanceTo(center);
+      const radius = kind === 'house' ? 1e9 : Math.min(560, Math.max(110, dist * 1.35));
+      const scene = this.flatten(src, center, radius, App.lowEnd ? 1.2e6 : 3.5e6);
+      this.envFor(kind, scene);
+      const cam = App.camera.clone(); cam.updateMatrixWorld();
+      const pt = new mod.WebGLPathTracer(App.renderer);
+      pt.tiles.set(App.lowEnd ? 3 : 2, App.lowEnd ? 3 : 2);
+      Object.assign(pt, { bounces: kind === 'house' ? 6 : 4, transmissiveBounces: 3, minSamples: 1, fadeDuration: 0, renderDelay: 0, filterGlossyFactor: 0.5, renderScale: App.lowEnd ? 0.6 : 1, dynamicLowRes: false, rasterizeScene: true });
+      await new Promise(r => setTimeout(r, 30));
+      pt.setScene(scene, cam);
+      Object.assign(this, { pt, scene, cam, active: true, preparing: false, t0: performance.now() });
+      $('#ptSave').disabled = false;
+      Track.bump('pathtrace');
+    } catch (e) {
+      console.error('Path tracing', e); this.preparing = false; this.cleanup(); this.close(); UI.toast(t('pt.fail'));
+    }
+  },
+
+  // Copia plana de la escena: instancias expandidas dentro del radio, materiales PBR estándar
+  flatten(src, center, radius, budget) {
+    src.updateMatrixWorld(true);
+    const out = new THREE.Scene(), cache = new Map(), sigs = new Map(), cands = [];
+    this.ownGeos = [];
+    const skip = new Set([Site.skyMesh, Site.clouds, Site.mountains, Site.pins, HouseViewer.sky, HouseViewer.clouds].filter(Boolean));
+    const visible = o => { for (let p = o; p; p = p.parent) { if (!p.visible || skip.has(p)) return false; } return true; };
+    const conv = (m, col) => {
+      if (!m || m.isShaderMaterial || m.isPointsMaterial || m.isSpriteMaterial || m.isLineBasicMaterial) return null;
+      if (m.opacity < 0.05 || m.visible === false) return null;
+      const key = m.uuid + (col ? col.getHexString() : '');
+      if (cache.has(key)) return cache.get(key);
+      let r = m;
+      if (!(m.isMeshStandardMaterial || m.isMeshPhysicalMaterial)) r = new THREE.MeshStandardMaterial({ color: m.color || 0xffffff, map: m.map || null, emissive: m.emissive || 0x000000, emissiveMap: m.emissiveMap || null, emissiveIntensity: m.emissiveIntensity ?? 1, transparent: m.transparent, opacity: m.opacity, side: m.side, roughness: 0.85, vertexColors: m.vertexColors });
+      if (col) { r = r.clone(); r.color = r.color.clone().multiply(col); }
+      // el trazador indexa materiales con 8 bits: se unifican los materiales idénticos
+      const u = x => x ? x.uuid : '', f = x => x == null ? '' : (+x).toFixed(2);
+      const sig = [r.type, r.color?.getHexString(), u(r.map), u(r.normalMap), u(r.roughnessMap), u(r.metalnessMap), u(r.alphaMap), u(r.emissiveMap), r.emissive?.getHexString(), f(r.emissiveIntensity),
+        f(r.roughness), f(r.metalness), f(r.opacity), r.transparent, r.side, f(r.transmission), f(r.ior), r.vertexColors, f(r.alphaTest), f(r.normalScale?.x), f(r.clearcoat), f(r.envMapIntensity)].join('|');
+      if (sigs.has(sig)) r = sigs.get(sig); else sigs.set(sig, r);
+      cache.set(key, r); return r;
+    };
+    const tris = g => (g.index ? g.index.count : g.attributes.position.count) / 3;
+    const clip = CutPlane && CutPlane.constant < 50 ? CutPlane.constant : null;
+    const box = new THREE.Box3();
+    src.traverse(o => {
+      if (!o.isMesh || !o.geometry?.attributes?.position || !visible(o)) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      if (mats.every(m => !m || m.isShaderMaterial)) return;
+      if (o.isInstancedMesh) {
+        const n = o.count, gt = tris(o.geometry), m4 = new THREE.Matrix4(), c = new THREE.Color();
+        for (let k = 0; k < n; k++) {
+          o.getMatrixAt(k, m4); m4.premultiply(o.matrixWorld);
+          const d = Math.hypot(m4.elements[12] - center.x, m4.elements[14] - center.z);
+          if (d > radius) continue;
+          let col = null; if (o.instanceColor) { o.getColorAt(k, c); col = c.clone(); }
+          cands.push({ o, m4: m4.clone(), col, d, t: gt });
+        }
+      } else {
+        if (clip != null && mats.some(m => m?.clippingPlanes?.length)) {
+          box.setFromObject(o); if (box.min.y > clip) return;
+          if (box.max.y > clip) {
+            // el trazador no usa planos de corte: se recorta la geometría a la altura del corte
+            const g = o.geometry.clone().applyMatrix4(o.matrixWorld), pa = g.attributes.position;
+            for (let i = 0; i < pa.count; i++) if (pa.getY(i) > clip) pa.setY(i, clip);
+            this.ownGeos.push(g);
+            cands.push({ o, geo: g, m4: new THREE.Matrix4(), col: null, d: 0, t: tris(g), plain: true }); return;
+          }
+        }
+        cands.push({ o, m4: o.matrixWorld.clone(), col: null, d: 0, t: tris(o.geometry), plain: true });
+      }
+    });
+    // lo más cercano primero; lo que no entra en el presupuesto de triángulos se descarta
+    cands.sort((a, b) => (a.plain ? -1 : 0) - (b.plain ? -1 : 0) || a.d - b.d);
+    let used = 0, n = 0;
+    // el trazador solo admite un material por malla: las mallas con varios materiales se dividen por grupo
+    const parts = new Map();
+    const split = g => {
+      if (parts.has(g)) return parts.get(g);
+      const list = g.groups.map(gr => {
+        const sub = new THREE.BufferGeometry();
+        if (g.index) { for (const k in g.attributes) sub.setAttribute(k, g.attributes[k]); sub.setIndex(Array.from(g.index.array.slice(gr.start, gr.start + gr.count))); }
+        else for (const k in g.attributes) { const a = g.attributes[k]; sub.setAttribute(k, new THREE.BufferAttribute(a.array.slice(gr.start * a.itemSize, (gr.start + gr.count) * a.itemSize), a.itemSize, a.normalized)); }
+        this.ownGeos.push(sub); return { geo: sub, mi: gr.materialIndex };
+      });
+      parts.set(g, list); return list;
+    };
+    const put = (geo, mat, m4) => { const mesh = new THREE.Mesh(geo, mat); mesh.matrixAutoUpdate = false; mesh.matrix.copy(m4); mesh.matrixWorld.copy(m4); out.add(mesh); n++; };
+    for (const c of cands) {
+      if (!c.plain && used + c.t > budget) continue;
+      const geo = c.geo || c.o.geometry;
+      if (Array.isArray(c.o.material)) {
+        if (geo.groups.length) split(geo).forEach(({ geo: sg, mi }) => { const m = conv(c.o.material[mi], c.col); if (m) put(sg, m, c.m4); });
+        else { const m = conv(c.o.material[0], c.col); if (m) put(geo, m, c.m4); }
+      } else { const m = conv(c.o.material, c.col); if (!m) continue; put(geo, m, c.m4); }
+      used += c.t;
+    }
+    this.stats = { meshes: n, tris: Math.round(used), materials: sigs.size };
+    // luces: el sol (y la luz interior si está encendida)
+    src.traverse(o => {
+      if (!visible(o)) return;
+      if (o.isDirectionalLight) { const l = new THREE.DirectionalLight(o.color, o.intensity); l.position.copy(o.getWorldPosition(new THREE.Vector3())); l.target.position.copy(o.target.getWorldPosition(new THREE.Vector3())); out.add(l, l.target); }
+      else if (o.isPointLight && o.intensity > 0) { const l = new THREE.PointLight(o.color, o.intensity, o.distance, o.decay); l.position.copy(o.getWorldPosition(new THREE.Vector3())); out.add(l); }
+    });
+    out.updateMatrixWorld(true);
+    return out;
+  },
+
+  // Fondo y luz ambiental: el cielo, las nubes y las montañas con bruma se capturan en un cubemap
+  envFor(kind, scene) {
+    const r = App.renderer;
+    if (kind === 'house' && HouseViewer.maqueta) {
+      const g = new this.mod.GradientEquirectTexture(64);
+      g.topColor.set('#ffffff'); g.bottomColor.set('#cfc9bd'); g.exponent = 1.6; g.update();
+      scene.environment = g; scene.environmentIntensity = 0.9; scene.background = new THREE.Color('#f3f2ee');
+      this.disposables = [g]; return;
+    }
+    const src = kind === 'house' ? HouseViewer.scene : Site.scene;
+    const keep = new Set((kind === 'house' ? [HouseViewer.sky, HouseViewer.clouds] : [Site.skyMesh, Site.clouds, Site.mountains]).filter(Boolean));
+    const inKeep = o => { for (let p = o; p; p = p.parent) if (keep.has(p)) return true; return false; };
+    const hidden = [];
+    src.traverse(o => { if (o.isMesh && o.visible && !inKeep(o)) { hidden.push(o); o.visible = false; } });
+    const rt = new THREE.WebGLCubeRenderTarget(512, { type: THREE.HalfFloatType });
+    const cc = new THREE.CubeCamera(1, 20000, rt);
+    cc.position.copy(App.camera.position); cc.position.y = Math.max(2, Math.min(App.camera.position.y, 60));
+    const env = src.environment; src.environment = null;
+    const prevTM = r.toneMapping; r.toneMapping = THREE.NoToneMapping;
+    cc.update(r, src);
+    r.toneMapping = prevTM; src.environment = env;
+    hidden.forEach(o => o.visible = true);
+    scene.background = rt.texture; scene.environment = rt.texture;
+    scene.environmentIntensity = kind === 'house' ? 0.75 : 0.7; scene.backgroundIntensity = 1;
+    this.disposables = [rt];
+  },
+
+  tick() {
+    if (!this.active) return;
+    this.pt.renderSample();
+    const s = Math.floor(this.pt.samples), T = this.target();
+    $('#ptProg').value = Math.min(1, s / T);
+    this.status(t('pt.samples', { n: s, t: T }));
+    if (s >= T) this.finish();
+  },
+
+  finish() {
+    if (!this.active) return;
+    this.pt.renderSample();          // el lienzo contiene el último resultado al leerlo
+    const url = App.renderer.domElement.toDataURL('image/jpeg', 0.94);
+    const w = App.renderer.domElement.width, h = App.renderer.domElement.height, s = Math.floor(this.pt.samples);
+    this.cleanup(); this.close();
+    Photo.showResult(url, w, h, t('pt.done', { n: s }), 'path-tracing');
+  },
+
+  cancel() { if (this.preparing) return; this.cleanup(); this.close(); },
+  cleanup() {
+    if (this.pt) { try { this.pt.dispose(); } catch (e) { } }
+    (this.disposables || []).forEach(d => d.dispose && d.dispose());
+    (this.ownGeos || []).forEach(g => g.dispose()); this.ownGeos = null;
+    this.pt = null; this.scene = null; this.disposables = null; this.active = false;
+    if (this.kind === 'site' && this.fdWas !== undefined) { Site.forceDetail = this.fdWas; Site._lodKey = null; this.fdWas = undefined; }
+    if (this.controls) { this.controls.enabled = this.ctlWas; this.controls = null; }
+  },
+  close() { $('#ptHud').hidden = true; document.body.classList.remove('pathtracing'); },
+  status(s) { $('#ptStatus').textContent = s; },
+  init() {
+    $('#ptSave').onclick = () => this.finish();
+    $('#ptCancel').onclick = () => this.cancel();
+    $('#photoPT').onclick = () => this.start('site');
+    $('#hRender').onclick = () => this.start('house');
+  },
+};
+
+Object.assign(I18N.es, {
+  'pt.btn': 'Render fotorrealista (trazado de rayos)', 'pt.title': 'Render fotorrealista', 'pt.loading': 'Cargando el motor de trazado de rayos…',
+  'pt.prep': 'Preparando la escena…', 'pt.samples': 'Muestras de luz: {n} de {t}', 'pt.save': 'Guardar ahora', 'pt.cancel': 'Cancelar',
+  'pt.fail': 'Este equipo no pudo generar el render fotorrealista. Usá “Capturar imagen”.', 'pt.done': 'Render por trazado de rayos con {n} muestras de luz.',
+  'pt.note': 'La imagen gana nitidez con cada muestra. Podés guardarla en cualquier momento.', 'pt.house': 'Render',
+});
+Object.assign(I18N.en, {
+  'pt.btn': 'Photoreal render (path tracing)', 'pt.title': 'Photoreal render', 'pt.loading': 'Loading the path tracing engine…',
+  'pt.prep': 'Preparing the scene…', 'pt.samples': 'Light samples: {n} of {t}', 'pt.save': 'Save now', 'pt.cancel': 'Cancel',
+  'pt.fail': 'This device could not create the photoreal render. Use “Capture image”.', 'pt.done': 'Path traced render with {n} light samples.',
+  'pt.note': 'The image gets sharper with every sample. You can save it at any time.', 'pt.house': 'Render',
+});
+
+// ============================================================================
+// 82-live.js — Presentación en vivo compartida (capacidad «room» de Claude)
+// El asesor (editor del artefacto) presenta: su cámara, la vista, el lote
+// seleccionado, el modo de la casa y la luz se transmiten a todos los que tienen
+// la página abierta en ese momento. Cada visitante puede dejar de seguir y
+// explorar por su cuenta. Nada se guarda: es solo la sesión en vivo.
+// ============================================================================
+
+const Live = {
+  room: null, user: null, canPresent: false, presenting: false,
+  leader: null, following: true, pose: null, lastMsg: 0, peers: [],
+
+  async init() {
+    const c = window.claude; if (!c || typeof c.use !== 'function') return;
+    const [room, user] = await Promise.all([c.use('room'), c.use('user')]);
+    if (!room) return;
+    this.room = room; this.user = user;
+    this.canPresent = user ? await user.canEdit().catch(() => false) : false;
+    $('#btnLive').hidden = !this.canPresent;
+    $('#btnLive').onclick = () => this.presenting ? this.stop() : this.start();
+    room.on('cam', m => this.onCam(m), () => { });
+    room.on('live', m => { if (m.data && m.data.on === false && this.leader === m.peer) this.leaderGone(); });
+    room.onPeers(ch => {
+      this.peers = ch.peers;
+      if (this.leader && ch.left.some(p => p.peer === this.leader)) this.leaderGone();
+      if (this.presenting && ch.joined.length) this.send(true);
+      this.renderPeers();
+    }, () => { });
+    $('#liveFollow').onclick = () => { this.following = !this.following; this.renderBanner(); if (this.following && this.pose) this.applyNow(); };
+    $('#liveStop').onclick = () => this.stop();
+    // si el visitante toma el control de la cámara, deja de seguir
+    App.canvas.addEventListener('pointerdown', () => { if (this.leader && this.following && !this.presenting) { this.following = false; this.renderBanner(); } });
+    setInterval(() => this.heartbeat(), 400);
+    this.presence();
+  },
+
+  // ---- presentador ----
+  start() {
+    this.presenting = true; this.leader = null; document.body.classList.add('presenting');
+    this.send(true); this.renderBanner(); this.presence();
+    UI.toast(t('live.started'));
+    Track.bump('live');
+  },
+  stop() {
+    if (!this.presenting) return;
+    this.presenting = false; document.body.classList.remove('presenting');
+    this.room.emit('live', { on: false }).catch(() => { });
+    this.renderBanner(); this.presence();
+  },
+  state() {
+    const cam = App.camera, ctl = App.view === 'house' ? App.houseControls : App.siteControls;
+    const r = v => Math.round(v * 100) / 100;
+    return {
+      v: App.view, p: cam.position.toArray().map(r), t: ctl.target.toArray().map(r), q: cam.quaternion.toArray().map(x => Math.round(x * 1e4) / 1e4),
+      lot: UI.selectedLot || null, tod: Site.timeOfDay || 'dia',
+      house: App.view === 'house' ? { code: HouseViewer.lotCode, model: HouseViewer.model?.id, mode: HouseViewer.mode, decor: HouseViewer.decor, maq: !!HouseViewer.maqueta } : null,
+      ts: Date.now(),
+    };
+  },
+  send(force) {
+    if (!this.presenting || !this.room) return;
+    if (!force && Date.now() - (this._sent || 0) < 160) return;
+    const s = this.state(), sig = JSON.stringify({ ...s, ts: 0 });
+    if (!force && sig === this._sig && Date.now() - this._sent < 2500) return;
+    this._sig = sig; this._sent = Date.now();
+    this.room.emit('cam', s).catch(e => { if (e && e.code === 'not_permitted') { this.presenting = false; this.renderBanner(); UI.toast(t('live.denied')); } });
+  },
+  heartbeat() { this.presence(); if (this.presenting) this.send(false); else if (this.leader && Date.now() - this.lastMsg > 12000) this.leaderGone(); },
+
+  // ---- seguidores ----
+  onCam(m) {
+    if (m.sameTab || this.presenting || !m.data || m.data.v == null) return;
+    if (this.leader !== m.peer) { this.leader = m.peer; this.leaderBy = m.by; this.following = true; this.renderBanner(); }
+    this.lastMsg = Date.now(); this.pose = m.data;
+    if (this.following) this.applyState(m.data);
+  },
+  leaderGone() { this.leader = null; this.pose = null; this.renderBanner(); },
+  applyNow() { this.applyState(this.pose, true); },
+  applyState(s, snap) {
+    if (this._busy) return;
+    const num = a => Array.isArray(a) && a.length >= 3 && a.every(Number.isFinite);
+    if (!num(s.p) || !num(s.t)) return;
+    if (s.v === 'site' || s.v === 'hero') {
+      if (App.view === 'house') { this._busy = true; App.exitHouse(true); setTimeout(() => this._busy = false, 500); return; }
+      if (App.view === 'hero') { $('#cta')?.click(); }
+      if (s.tod && s.tod !== Site.timeOfDay && typeof Site.setTimeOfDay === 'function' && LIGHTING[s.tod]) Site.setTimeOfDay(s.tod);
+      const code = typeof s.lot === 'string' ? s.lot : null;
+      if (code !== (UI.selectedLot || null)) { if (code && Site.lotIndex.has(code)) UI.showLot(Site.lotIndex.get(code)); else if (!code) UI.closeLot(); }
+    } else if (s.v === 'house' && s.house) {
+      const h = s.house;
+      if (App.view !== 'house' || HouseViewer.lotCode !== h.code || (h.model && HouseViewer.model?.id !== h.model)) {
+        if (!Site.lotIndex.has(h.code) || (h.model && !Store.data.models[h.model])) return;
+        this._busy = true; if (App.view === 'house') App.exitHouse(true);
+        setTimeout(() => { App.enterHouse(h.code, h.model); setTimeout(() => this._busy = false, 900); }, App.view === 'house' ? 420 : 0);
+        return;
+      }
+      if (h.decor && h.decor !== HouseViewer.decor && DECOR_STYLES.some(d => d.id === h.decor)) { HouseViewer.setDecor(h.decor); UI.syncDecor && UI.syncDecor(); }
+      if (!!h.maq !== !!HouseViewer.maqueta) HouseViewer.setMaqueta(!!h.maq);
+      if (h.mode && h.mode !== HouseViewer.mode && ['exterior', 'open', 'walk'].includes(h.mode)) { HouseViewer.setMode(h.mode === 'walk' ? 'open' : h.mode, true); }
+    }
+    this.goal = { p: new THREE.Vector3().fromArray(s.p), t: new THREE.Vector3().fromArray(s.t), q: Array.isArray(s.q) && s.q.length === 4 ? new THREE.Quaternion().fromArray(s.q) : null, walk: s.house?.mode === 'walk' };
+    if (snap) { App.camera.position.copy(this.goal.p); }
+  },
+  // suavizado de la cámara en cada cuadro (antes de los controles)
+  update(dt) {
+    if (!this.goal || !this.following || !this.leader || this.presenting || this._busy) return false;
+    const k = 1 - Math.exp(-dt * 6), ctl = App.view === 'house' ? App.houseControls : App.siteControls;
+    App.camera.position.lerp(this.goal.p, k); ctl.target.lerp(this.goal.t, k);
+    if (this.goal.walk && this.goal.q) App.camera.quaternion.slerp(this.goal.q, k); else App.camera.lookAt(ctl.target);
+    return true;
+  },
+
+  // ---- presencia: qué está mirando cada persona ----
+  presence() {
+    if (!this.room) return;
+    const p = { role: this.presenting ? 'presenter' : 'viewer', view: App.view, lot: UI.selectedLot || null, following: !!(this.leader && this.following) };
+    const sig = JSON.stringify(p); if (sig === this._psig) return; this._psig = sig;
+    this.room.presence(p).catch(() => { });
+  },
+  async renderPeers() {
+    const el = $('#livePeers'); if (!el) return;
+    const others = this.peers.filter(p => !p.sameTab && p.kind === 'viewer');
+    const ids = [...new Set(others.map(p => p.by).filter(Boolean))];
+    const prof = ids.length && this.user?.profiles ? await this.user.profiles(ids).catch(() => ({})) : {};
+    el.innerHTML = '';
+    if (!others.length) { el.textContent = t('live.alone'); return; }
+    for (const p of others) {
+      const li = document.createElement('li');
+      const name = (p.by && prof[p.by]?.name) || (p.guest ? t('live.guest') : t('live.someone'));
+      const pr = p.presence || {};
+      li.textContent = name + (typeof pr.lot === 'string' ? ' · ' + t('live.seeing', { lot: pr.lot.slice(0, 20) }) : '') + (pr.following ? ' · ' + t('live.following') : '');
+      el.append(li);
+    }
+  },
+  renderBanner() {
+    const b = $('#liveBar');
+    b.hidden = !(this.presenting || this.leader);
+    b.classList.toggle('is-presenter', this.presenting);
+    $('#liveStop').hidden = !this.presenting; $('#livePeers').hidden = !this.presenting; $('#liveFollow').hidden = this.presenting;
+    $('#liveFollow').textContent = this.following ? t('live.explore') : t('live.follow');
+    $('#liveText').textContent = this.presenting ? t('live.on') : this.following ? t('live.watching') : t('live.paused');
+    $('#btnLive').textContent = this.presenting ? t('live.stop') : t('live.btn');
+    if (this.presenting) this.renderPeers();
+    this.presence();
+  },
+};
+
+Object.assign(I18N.es, {
+  'live.btn': 'Presentar en vivo', 'live.stop': 'Terminar presentación', 'live.on': 'En vivo: todos ven tu pantalla 3D',
+  'live.watching': 'Presentación en vivo del asesor', 'live.paused': 'Explorando por tu cuenta', 'live.explore': 'Explorar por mi cuenta',
+  'live.follow': 'Volver a seguir al asesor', 'live.started': 'Presentación iniciada: quien tenga la página abierta verá lo mismo que vos',
+  'live.denied': 'Solo quien edita el artefacto puede presentar', 'live.alone': 'Aún no hay nadie más conectado',
+  'live.guest': 'Invitado', 'live.someone': 'Visitante', 'live.seeing': 'viendo {lot}', 'live.following': 'siguiendo',
+});
+Object.assign(I18N.en, {
+  'live.btn': 'Present live', 'live.stop': 'End presentation', 'live.on': 'Live: everyone sees your 3D screen',
+  'live.watching': 'Live presentation by the advisor', 'live.paused': 'Exploring on your own', 'live.explore': 'Explore on my own',
+  'live.follow': 'Follow the advisor again', 'live.started': 'Presentation started: anyone with the page open sees what you see',
+  'live.denied': 'Only artifact editors can present', 'live.alone': 'Nobody else is connected yet',
+  'live.guest': 'Guest', 'live.someone': 'Visitor', 'live.seeing': 'viewing {lot}', 'live.following': 'following',
+});
+
+// ============================================================================
+// 84-assistant.js — Asistente con IA (capacidad «sample» de Claude)
+// Responde dudas del comprador con el inventario real del prototipo mediante
+// herramientas de la página: buscar lotes, ver un lote, comparar modelos,
+// calcular la cuota y mover la cámara del 3D hacia lo que recomienda.
+// ============================================================================
+
+const Assistant = {
+  sample: null, turns: [], busy: false, ctl: null,
+
+  async init() {
+    const c = window.claude; if (!c || typeof c.use !== 'function') return;
+    const s = await c.use('sample'); if (!s) return;
+    this.sample = s;
+    $('#fabAI').hidden = false; $('#btnAI').hidden = false;
+    $('#fabAI').onclick = () => this.open(); $('#btnAI').onclick = () => this.open();
+    $('#aiClose').onclick = () => this.close();
+    $('#aiStop').onclick = () => this.ctl?.abort();
+    $('#aiForm').onsubmit = e => { e.preventDefault(); const v = $('#aiInput').value.trim(); if (v) { $('#aiInput').value = ''; this.ask(v); } };
+    $('#aiChips').onclick = e => { const b = e.target.closest('button[data-q]'); if (b) this.ask(b.textContent); };
+    $('#aiLog').onclick = e => { const b = e.target.closest('[data-ai-lot]'); if (b) { App.focusLot(b.dataset.aiLot); if (innerWidth < 700) this.close(); } };
+  },
+  open() {
+    $('#aiPanel').hidden = false; document.body.classList.add('ai-open');
+    if (!this.turns.length) this.renderChips();
+    setTimeout(() => $('#aiInput').focus(), 50);
+    Track.bump('ai', true);
+  },
+  close() { $('#aiPanel').hidden = true; document.body.classList.remove('ai-open'); },
+  renderChips() {
+    const qs = LANG === 'en' ? ['What can I buy with a $900 monthly income?', 'Show me available lots near the central park', 'What is the difference between models A, B and C?', 'How do I reserve a lot?']
+      : ['¿Qué puedo comprar con un ingreso de $900 al mes?', 'Mostrame lotes disponibles cerca del parque central', '¿Qué diferencia hay entre los modelos A, B y C?', '¿Cómo aparto un lote?'];
+    $('#aiChips').innerHTML = qs.map(q => `<button class="chip" type="button" data-q>${esc(q)}</button>`).join('');
+  },
+
+  // ---- datos que el asistente puede consultar ----
+  lots() { return Object.values(Store.data.lots).filter(l => l.projectId === (App.project?.id || PROJECT_ID)); },
+  row(code) {
+    const I = UI.lotInfo(code), price = I.model ? I.priceTotal : I.priceLot;
+    const geo = I.geo, park = amenityInfo('parque')?.box;
+    return {
+      codigo: code, etapa: I.stage?.name || null, estado: STATUS[I.status]?.label || I.status, modelo: I.model ? `${I.model.name} (${I.model.tagline})` : 'solo terreno',
+      terreno_m2: I.area ? Math.round(I.area) : null, construccion_m2: I.model?.area || null, precio_terreno: I.priceLot, precio_total: price,
+      cuota_mensual_ejemplo: Math.round(UI.calcLoan(price, LOAN.down, LOAN.years, LOAN.rate).monthly),
+      distancia_parque_m: geo && park ? Math.round(Math.hypot(geo.x - park.x, geo.z - park.z)) : null,
+    };
+  },
+  tools() {
+    const S = { type: 'string' }, N = { type: 'number' };
+    return [
+      { name: 'buscar_lotes', description: 'Busca lotes del inventario demostrativo. Devuelve el total que cumple y hasta `limite` lotes ordenados (por precio o por cercanía al parque central) con etapa, estado, modelo, precios y cuota mensual de ejemplo.',
+        inputSchema: { type: 'object', properties: { etapa: { type: 'integer', description: '1 a 4' }, estado: { type: 'string', enum: ['disponible', 'reservado', 'vendido'] }, modelo: { type: 'string', enum: ['A', 'B', 'C', 'terreno'] }, precio_max: N, cuota_max: N, orden: { type: 'string', enum: ['precio', 'cerca_parque'] }, limite: { type: 'integer' } } },
+        execute: (q) => {
+          let L = this.lots();
+          if (q.etapa) L = L.filter(l => +l.stage === +q.etapa);
+          if (q.estado) L = L.filter(l => l.status === q.estado);
+          if (q.modelo) L = L.filter(l => q.modelo === 'terreno' ? !l.model : l.model === q.modelo);
+          let rows = L.map(l => this.row(l.code));
+          if (q.precio_max) rows = rows.filter(r => r.precio_total <= q.precio_max);
+          if (q.cuota_max) rows = rows.filter(r => r.cuota_mensual_ejemplo <= q.cuota_max);
+          rows.sort(q.orden === 'cerca_parque' ? (a, b) => (a.distancia_parque_m ?? 1e9) - (b.distancia_parque_m ?? 1e9) : (a, b) => a.precio_total - b.precio_total);
+          return { total: rows.length, lotes: rows.slice(0, Math.min(10, q.limite || 6)) };
+        } },
+      { name: 'ver_lote', description: 'Detalle de un lote por su código (por ejemplo E1-M07-L05).', inputSchema: { type: 'object', properties: { codigo: S }, required: ['codigo'] },
+        execute: ({ codigo }) => { const c = String(codigo || '').toUpperCase(); if (!Store.data.lots[c]) throw new Error('No existe el lote ' + c); return this.row(c); } },
+      { name: 'modelos', description: 'Lista los modelos de vivienda con precio, área, dormitorios, baños y descripción.',
+        execute: () => Object.values(Store.data.models).map(m => ({ id: m.id, nombre: m.name, tipo: m.tagline, precio_vivienda: m.priceHome, area_m2: m.area, dormitorios: m.bedrooms, banos: m.baths, techo: m.facade?.roof, descripcion: m.description })) },
+      { name: 'calcular_cuota', description: 'Calcula la cuota mensual estimada de un crédito de ejemplo. Por defecto prima 10 %, 20 años y tasa anual ilustrativa 7.5 %.',
+        inputSchema: { type: 'object', properties: { precio: N, prima_pct: N, anios: N, tasa_anual: N }, required: ['precio'] },
+        execute: ({ precio, prima_pct = LOAN.down, anios = LOAN.years, tasa_anual = LOAN.rate }) => { const c = UI.calcLoan(+precio, +prima_pct, +anios, +tasa_anual); return { cuota_mensual: Math.round(c.monthly * 100) / 100, prima: Math.round(c.down), monto_financiado: Math.round(c.P), ingreso_sugerido_aprox: Math.round(c.monthly / 0.3) }; } },
+      { name: 'areas_comunes', description: 'Lista las áreas comunes del residencial (id, nombre, equipamiento, horario).',
+        execute: () => Object.entries(AMENITIES).map(([id, a]) => ({ id, nombre: a.name, tipo: a.type, descripcion: a.desc, equipamiento: a.equip, horario: a.hours })) },
+      { name: 'mostrar_en_3d', description: 'Mueve la cámara del modelo 3D para mostrarle al visitante un lote (codigo) o un área común (area). Usalo cuando recomiendes algo concreto.',
+        inputSchema: { type: 'object', properties: { codigo: S, area: S } },
+        execute: ({ codigo, area }) => {
+          if (codigo) { const c = String(codigo).toUpperCase(); if (!Site.lotIndex.has(c)) throw new Error('Lote no encontrado'); App.focusLot(c); return { ok: true, mostrando: c }; }
+          if (area && AMENITIES[area]) { if (App.view !== 'site') App.enterSite(); UI.showAmenity(area); const ai = amenityInfo(area); if (ai) Frame.go(ai.box, 'tres4', 1.2); return { ok: true, mostrando: area }; }
+          throw new Error('Indicá un código de lote o un id de área común');
+        } },
+      { name: 'ver_casa_por_dentro', description: 'Abre la vivienda de un lote en la vista de maqueta abierta (dollhouse) para que el visitante vea la distribución.',
+        inputSchema: { type: 'object', properties: { codigo: S, modelo: { type: 'string', enum: ['A', 'B', 'C'] } }, required: ['codigo'] },
+        execute: ({ codigo, modelo }) => { const c = String(codigo).toUpperCase(); if (!Site.lotIndex.has(c)) throw new Error('Lote no encontrado'); this.close(); App.enterHouse(c, modelo || Store.data.lots[c]?.model || 'A'); setTimeout(() => HouseViewer.setMode('open'), 1400); return { ok: true }; } },
+    ];
+  },
+  rules() {
+    const p = App.project || {}, st = (p.stages || DEFAULT_STAGES).map(s => `${s.id}: ${s.name} — ${s.desc}`).join('\n');
+    return `Sos el asistente comercial virtual de "${p.name || 'Valle de San Sebastián'}", un residencial de vivienda de interés social en El Salvador, dentro de un prototipo 3D demostrativo.
+Respondé en ${LANG === 'en' ? 'inglés' : 'español salvadoreño cordial (voseo)'}; breve (máximo 120 palabras), concreto y amable. Usá viñetas cortas cuando listes opciones.
+Reglas:
+- Todos los precios, lotes, cuotas y planos son DEMOSTRATIVOS; decilo una vez cuando des cifras.
+- Nunca inventes datos: consultá las herramientas para lotes, precios, modelos, cuotas y áreas comunes.
+- Cuando recomiendes un lote o área concreta, llamá a mostrar_en_3d para que el visitante lo vea.
+- Escribí los códigos de lote exactos (formato E1-M07-L05).
+- No pidas ni guardes datos personales. Para apartar, agendar cita o hablar con una persona, indicá los botones "Apartar en línea", "Agendar cita" o WhatsApp${p.hours ? ` (horario: ${p.hours})` : ''}. Depósito de apartado de ejemplo: $${p.deposit || 300}.
+- Un crédito de ejemplo usa prima ${LOAN.down} %, ${LOAN.years} años y tasa ilustrativa ${LOAN.rate} %; la cuota sugerida no debería pasar del 30 % del ingreso familiar.
+Etapas:\n${st}
+Contexto actual del visitante: vista ${App.view}${UI.selectedLot ? `, mirando el lote ${UI.selectedLot}` : ''}${App.view === 'house' ? `, dentro de la casa del lote ${HouseViewer.lotCode} (${HouseViewer.model?.name})` : ''}.`;
+  },
+
+  async ask(text) {
+    if (this.busy || !this.sample) return;
+    this.busy = true; $('#aiChips').innerHTML = '';
+    this.turns.push({ role: 'user', content: text });
+    this.bubble('user', text);
+    const out = this.bubble('ai', t('ai.thinking')); out.classList.add('pending');
+    $('#aiStop').hidden = false; $('#aiSend').disabled = true;
+    this.ctl = new AbortController();
+    const turns = this.turns.slice(-12);
+    try {
+      const { text: answer } = await this.sample([{ role: 'user', content: this.rules() }, { role: 'assistant', content: LANG === 'en' ? 'Understood.' : 'Entendido.' }, ...turns], {
+        cache: false, modelTier: 'quick', signal: this.ctl.signal, tools: this.tools().map(tl => ({ ...tl, execute: (inp, ctx) => { this.note(out, tl.name); return tl.execute(inp || {}, ctx); } })),
+        onText: ({ text }) => { out.classList.remove('pending'); out.innerHTML = this.md(text); this.scroll(); },
+      });
+      out.classList.remove('pending'); out.innerHTML = this.md(answer);
+      this.turns.push({ role: 'assistant', content: answer });
+      Track.bump('ai_q');
+    } catch (e) {
+      this.turns.pop();
+      out.classList.remove('pending');
+      if (e && e.text) out.innerHTML = this.md(e.text); else out.remove();
+      if (e?.code !== 'cancelled') this.bubble('sys', t('ai.err.' + (['not_granted', 'rate_limited'].includes(e?.code) ? e.code : 'other')));
+    } finally {
+      this.busy = false; $('#aiStop').hidden = true; $('#aiSend').disabled = false; this.scroll();
+    }
+  },
+  note(el, name) { if (el.classList.contains('pending')) el.textContent = t('ai.tool.' + name); },
+  bubble(who, text) {
+    const d = document.createElement('div'); d.className = 'ai-msg ' + who;
+    if (who === 'user' || who === 'sys') d.textContent = text; else d.innerHTML = this.md(text);
+    $('#aiLog').append(d); this.scroll(); return d;
+  },
+  scroll() { const l = $('#aiLog'); l.scrollTop = l.scrollHeight; },
+  // markdown mínimo y seguro: negritas, viñetas, saltos de línea y códigos de lote clicables
+  md(s) {
+    let h = esc(s || '');
+    h = h.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    h = h.replace(/\b(E[1-4]-M\d{2}-L\d{2})\b/g, (m) => Site.lotIndex.has(m) ? `<button type="button" class="ai-lot" data-ai-lot="${m}">${m}</button>` : m);
+    const lines = h.split('\n'); let html = '', inList = false;
+    for (const ln of lines) {
+      const m = ln.match(/^\s*[-•*]\s+(.*)/);
+      if (m) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${m[1]}</li>`; }
+      else { if (inList) { html += '</ul>'; inList = false; } if (ln.trim()) html += `<p>${ln}</p>`; }
+    }
+    return html + (inList ? '</ul>' : '');
+  },
+};
+
+Object.assign(I18N.es, {
+  'ai.btn': 'Asistente con IA', 'ai.title': 'Asistente con IA', 'ai.sub': 'Pregunta por lotes, precios, cuotas o áreas comunes. Responde con el inventario demostrativo.',
+  'ai.ph': 'Escribí tu pregunta…', 'ai.send': 'Enviar', 'ai.stop': 'Detener', 'ai.thinking': 'Pensando…',
+  'ai.err.not_granted': 'El asistente necesita tu permiso para usar Claude. Podés activarlo desde el menú de permisos del artefacto.',
+  'ai.err.rate_limited': 'Hay muchas consultas seguidas. Esperá un momento y volvé a preguntar.', 'ai.err.other': 'No se pudo obtener respuesta. Probá de nuevo.',
+  'ai.tool.buscar_lotes': 'Buscando lotes en el inventario…', 'ai.tool.ver_lote': 'Revisando el lote…', 'ai.tool.modelos': 'Consultando los modelos…',
+  'ai.tool.calcular_cuota': 'Calculando la cuota…', 'ai.tool.areas_comunes': 'Consultando áreas comunes…', 'ai.tool.mostrar_en_3d': 'Mostrándolo en el 3D…', 'ai.tool.ver_casa_por_dentro': 'Abriendo la casa…',
+  'ai.disc': 'Respuestas generadas con IA sobre datos demostrativos. Confirmá todo con un asesor.',
+});
+Object.assign(I18N.en, {
+  'ai.btn': 'AI assistant', 'ai.title': 'AI assistant', 'ai.sub': 'Ask about lots, prices, payments or amenities. Answers use the demo inventory.',
+  'ai.ph': 'Type your question…', 'ai.send': 'Send', 'ai.stop': 'Stop', 'ai.thinking': 'Thinking…',
+  'ai.err.not_granted': 'The assistant needs your permission to use Claude. You can allow it from the artifact permissions menu.',
+  'ai.err.rate_limited': 'Too many questions in a row. Wait a moment and ask again.', 'ai.err.other': 'Could not get an answer. Try again.',
+  'ai.tool.buscar_lotes': 'Searching the inventory…', 'ai.tool.ver_lote': 'Checking the lot…', 'ai.tool.modelos': 'Checking the models…',
+  'ai.tool.calcular_cuota': 'Calculating the payment…', 'ai.tool.areas_comunes': 'Checking amenities…', 'ai.tool.mostrar_en_3d': 'Showing it in 3D…', 'ai.tool.ver_casa_por_dentro': 'Opening the house…',
+  'ai.disc': 'AI-generated answers on demo data. Confirm everything with an advisor.',
+});
+
+// ============================================================================
 // 90-main.js — Arranque, render loop, cámaras, interacción y navegación
 // ============================================================================
 
 const App = {
   view: 'hero', walking: false, width: innerWidth, height: innerHeight,
-  lowEnd: matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4 || /lowend/.test(location.search),
+  lowEnd: !/[?&]hq/.test(location.search) && (matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4 || /lowend/.test(location.search)),
   project: null, layoutLots: [],
 
   async start() {
@@ -5568,7 +6211,7 @@ const App = {
     this.siteControls.enabled = false;
 
     Loader.set(15, 'load.2');
-    Site.init(); HouseViewer.init(); UI.init(); Tour.init(); Photo.init(); Shell.init();
+    Site.init(); HouseViewer.init(); UI.init(); Tour.init(); Photo.init(); Shell.init(); PathRender.init();
     Loader.set(35, 'load.3');
     // Posproceso (oclusión ambiental) solo en equipos de escritorio
     if (!this.lowEnd) {
@@ -5597,6 +6240,7 @@ const App = {
         this.siteComposer.addPass(this.gradeSite = new ShaderPass(GradeShader));
       } catch (e) { console.warn('Sin posproceso', e); this.composer = null; this.siteComposer = null; }
     }
+    AOPlus.upgrade();
     this.bindPointer();
     addEventListener('resize', () => this.resize()); this.resize();
     $('#adminClose').addEventListener('click', () => Admin.close());
@@ -5615,6 +6259,8 @@ const App = {
     Shell.fillFilterOptions(); Shell.syncFavCount(); applyI18n();
     setTimeout(() => { $('#loading').hidden = true; Shell.routeHash(); Thumbs.renderAll(); }, 250);
     document.body.classList.add('ready');
+    Assistant.init().catch(e => console.warn('Asistente IA', e));
+    Live.init().catch(e => console.warn('En vivo', e));
   },
 
   onData(col) {
@@ -5756,10 +6402,14 @@ const App = {
 
   loop() {
     const dt = Math.min(0.1, this.clock.getDelta());
+    if (PathRender.active) { PathRender.tick(); return; }
+    if (PathRender.preparing) return;
     Tweens.update(dt);
+    const following = Live.update(dt);
+    if (Live.presenting) Live.send(false);
     if (this.view === 'house') {
       if (this.walking) HouseViewer.updateWalk(dt);
-      if (this.houseControls.enabled && !Tweens.list.some(t => t.tag === 'cam')) this.houseControls.update();
+      if (this.houseControls.enabled && !following && !Tweens.list.some(t => t.tag === 'cam')) this.houseControls.update();
       if (this.composer) {
         this.gtao.enabled = CutPlane.constant >= 100 && (HouseViewer.roofK < 0.01 || HouseViewer.roofK > 0.99);
         this.composer.render(dt);
@@ -5770,7 +6420,7 @@ const App = {
         const t = performance.now() / 1000 * 0.05;
         this.camera.position.set(Math.sin(t) * 520, 300, 70 + Math.cos(t) * 520);
         this.camera.lookAt(-10, 0, 70); this.siteControls.target.set(-10, 0, 70);
-      } else if (this.siteControls.enabled && !Tweens.list.some(t => t.tag === 'cam')) this.siteControls.update();
+      } else if (this.siteControls.enabled && !following && !Tweens.list.some(t => t.tag === 'cam')) this.siteControls.update();
       if (this.view === 'site' && (this._lodT = (this._lodT || 0) + dt) > 0.35) { this._lodT = 0; Site.updateLOD(); }
       // la oclusión ambiental solo se aplica de cerca (desde muy alto no aporta y cuesta)
       if (this.siteComposer && this.view === 'site' && this.camera.position.distanceTo(this.siteControls.target) < 420) this.siteComposer.render(dt);
@@ -5780,7 +6430,7 @@ const App = {
   },
 };
 
-window.__vss = { PBR_STATUS, Tweens, Shell, Track, App, Store, Site, HouseViewer, UI, Admin, buildDemoSeed, generateLayoutLots };
+window.__vss = { PBR_STATUS, AOPlus, PathRender, Live, Assistant, Tweens, Shell, Track, App, Store, Site, HouseViewer, UI, Admin, buildDemoSeed, generateLayoutLots };
 App.start().catch(e => { console.error(e); $('#loading').innerHTML = `<p>No se pudo iniciar el visor 3D: ${esc(e.message)}</p><p class="muted">Se necesita un navegador compatible con WebGL.</p>`; });
 
 </script>

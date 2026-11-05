@@ -14,7 +14,11 @@ html = f'''<title>Valle de San Sebastián</title>
 </style>
 {read('src/body.html')}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script type="importmap">{{"imports":{{"three":"{THREE}/build/three.module.min.js","three/addons/":"{THREE}/examples/jsm/"}}}}</script>
+<script type="importmap">{{"imports":{{"three":"{THREE}/build/three.module.min.js","three/addons/":"{THREE}/examples/jsm/","three/examples/jsm/":"{THREE}/examples/jsm/",
+"postprocessing":"https://cdn.jsdelivr.net/npm/postprocessing@6.36.0/build/index.js",
+"n8ao":"https://cdn.jsdelivr.net/npm/n8ao@2.0.1/dist/N8AO.js",
+"three-mesh-bvh":"https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.8.3/build/index.module.js",
+"three-gpu-pathtracer":"https://cdn.jsdelivr.net/npm/three-gpu-pathtracer@0.0.23/build/index.module.js"}}}}</script>
 <script type="module">
 import * as THREE from 'three';
 import {{ OrbitControls }} from 'three/addons/controls/OrbitControls.js';

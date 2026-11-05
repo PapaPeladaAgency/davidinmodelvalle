@@ -4,7 +4,7 @@
 
 const App = {
   view: 'hero', walking: false, width: innerWidth, height: innerHeight,
-  lowEnd: matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4 || /lowend/.test(location.search),
+  lowEnd: !/[?&]hq/.test(location.search) && (matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4 || /lowend/.test(location.search)),
   project: null, layoutLots: [],
 
   async start() {
@@ -26,7 +26,7 @@ const App = {
     this.siteControls.enabled = false;
 
     Loader.set(15, 'load.2');
-    Site.init(); HouseViewer.init(); UI.init(); Tour.init(); Photo.init(); Shell.init();
+    Site.init(); HouseViewer.init(); UI.init(); Tour.init(); Photo.init(); Shell.init(); PathRender.init();
     Loader.set(35, 'load.3');
     // Posproceso (oclusión ambiental) solo en equipos de escritorio
     if (!this.lowEnd) {
@@ -55,6 +55,7 @@ const App = {
         this.siteComposer.addPass(this.gradeSite = new ShaderPass(GradeShader));
       } catch (e) { console.warn('Sin posproceso', e); this.composer = null; this.siteComposer = null; }
     }
+    AOPlus.upgrade();
     this.bindPointer();
     addEventListener('resize', () => this.resize()); this.resize();
     $('#adminClose').addEventListener('click', () => Admin.close());
@@ -73,6 +74,8 @@ const App = {
     Shell.fillFilterOptions(); Shell.syncFavCount(); applyI18n();
     setTimeout(() => { $('#loading').hidden = true; Shell.routeHash(); Thumbs.renderAll(); }, 250);
     document.body.classList.add('ready');
+    Assistant.init().catch(e => console.warn('Asistente IA', e));
+    Live.init().catch(e => console.warn('En vivo', e));
   },
 
   onData(col) {
@@ -214,10 +217,14 @@ const App = {
 
   loop() {
     const dt = Math.min(0.1, this.clock.getDelta());
+    if (PathRender.active) { PathRender.tick(); return; }
+    if (PathRender.preparing) return;
     Tweens.update(dt);
+    const following = Live.update(dt);
+    if (Live.presenting) Live.send(false);
     if (this.view === 'house') {
       if (this.walking) HouseViewer.updateWalk(dt);
-      if (this.houseControls.enabled && !Tweens.list.some(t => t.tag === 'cam')) this.houseControls.update();
+      if (this.houseControls.enabled && !following && !Tweens.list.some(t => t.tag === 'cam')) this.houseControls.update();
       if (this.composer) {
         this.gtao.enabled = CutPlane.constant >= 100 && (HouseViewer.roofK < 0.01 || HouseViewer.roofK > 0.99);
         this.composer.render(dt);
@@ -228,7 +235,7 @@ const App = {
         const t = performance.now() / 1000 * 0.05;
         this.camera.position.set(Math.sin(t) * 520, 300, 70 + Math.cos(t) * 520);
         this.camera.lookAt(-10, 0, 70); this.siteControls.target.set(-10, 0, 70);
-      } else if (this.siteControls.enabled && !Tweens.list.some(t => t.tag === 'cam')) this.siteControls.update();
+      } else if (this.siteControls.enabled && !following && !Tweens.list.some(t => t.tag === 'cam')) this.siteControls.update();
       if (this.view === 'site' && (this._lodT = (this._lodT || 0) + dt) > 0.35) { this._lodT = 0; Site.updateLOD(); }
       // la oclusión ambiental solo se aplica de cerca (desde muy alto no aporta y cuesta)
       if (this.siteComposer && this.view === 'site' && this.camera.position.distanceTo(this.siteControls.target) < 420) this.siteComposer.render(dt);
@@ -238,5 +245,5 @@ const App = {
   },
 };
 
-window.__vss = { PBR_STATUS, Tweens, Shell, Track, App, Store, Site, HouseViewer, UI, Admin, buildDemoSeed, generateLayoutLots };
+window.__vss = { PBR_STATUS, AOPlus, PathRender, Live, Assistant, Tweens, Shell, Track, App, Store, Site, HouseViewer, UI, Admin, buildDemoSeed, generateLayoutLots };
 App.start().catch(e => { console.error(e); $('#loading').innerHTML = `<p>No se pudo iniciar el visor 3D: ${esc(e.message)}</p><p class="muted">Se necesita un navegador compatible con WebGL.</p>`; });

@@ -78,7 +78,7 @@ const Site = {
   // Entorno permanente: suelo, cerros, volcán, carretera
   buildEnvironment() {
     const env = new THREE.Group(); this.scene.add(env);
-    buildMountains(env);
+    this.mountains = buildMountains(env);
     const gg = new THREE.PlaneGeometry(4200, 4200, 70, 70); gg.rotateX(-Math.PI / 2);
     const pos = gg.attributes.position, cols = [];
     const rnd = mulberry(7);
