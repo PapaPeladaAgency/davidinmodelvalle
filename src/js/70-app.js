@@ -364,7 +364,10 @@ const Shell = {
       const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'letter' });
       const L = LANG === 'en', W = 216, H = 279, x = 18, R = W - x; let y;
       const INK = [18, 19, 21], MUT = [107, 107, 107], LINE = [220, 220, 216];
-      const lab = (s, lx, ly, o = {}) => { doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...MUT); doc.text(s.toUpperCase(), lx, ly, { charSpace: 0.9, ...o }); };
+      const lab = (s, lx, ly, o = {}) => { doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...MUT); const u = s.toUpperCase(), cs = 0.9;
+        // jsPDF no suma el espaciado entre letras al alinear a la derecha: se calcula a mano
+        if (o.align === 'right') lx -= doc.getTextWidth(u) + cs * u.length;
+        doc.text(u, lx, ly, { charSpace: cs }); };
       const hair = (ly, c = LINE, w = 0.2) => { doc.setDrawColor(...c); doc.setLineWidth(w); doc.line(x, ly, R, ly); };
       const date = new Date().toLocaleDateString(L ? 'en-US' : 'es-SV');
       // cabecera
@@ -385,7 +388,7 @@ const Shell = {
       doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(170); doc.text((L ? 'Home + lot' : 'Casa + terreno').toUpperCase(), rx + 5, ry + 7, { charSpace: 0.9 });
       doc.setFontSize(19); doc.setTextColor(255); doc.text(money(price), rx + 5, ry + 18); ry += 24;
       const row = (k, v) => { lab(k, rx, ry + 8); doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.setTextColor(...INK); doc.text(v, rx, ry + 14); ry += 17; doc.setDrawColor(...LINE); doc.setLineWidth(0.2); doc.line(rx, ry - 0.5, R, ry - 0.5); };
-      row(L ? 'Lot area' : 'Área del terreno', `≈ ${I.area} m²`);
+      row(L ? 'Lot area' : 'Área del terreno', `${L ? 'approx.' : 'aprox.'} ${I.area} m²`);
       if (m) row(L ? 'Built area' : 'Construcción', `${m.area} m² · ${m.bedrooms} ${L ? 'bed' : 'hab.'} · ${m.baths} ${L ? 'bath' : 'baño'}`);
       row(L ? 'Status' : 'Estado', this.stName(I.status));
       y += 84;
