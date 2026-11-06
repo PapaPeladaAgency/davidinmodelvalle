@@ -927,6 +927,11 @@ body[data-view="house"] .fab-ai { bottom: calc(110px + env(safe-area-inset-botto
 #backToSite, .walk-actions .btn, .house-actions .btn:not(.primary), .lc-row .btn:not(.primary):not(.whats) { background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border-color: var(--line); box-shadow: var(--shadow); }
 #backToSite:hover, .walk-actions .btn:hover { background: rgba(30,33,37,.85); }
 .model-pick { white-space: nowrap; }
+:root:root:root { --glass: rgba(16,18,21,.76); --glass-2: rgba(16,18,21,.86); }
+.btn.primary { box-shadow: 0 6px 20px rgba(0,0,0,.28); }
+.house-actions .btn.primary { background: var(--acc); border-color: var(--acc); color: var(--acc-ink); }
+.house-actions .btn.primary:hover:not(:disabled) { background: #f6c27a; }
+@media (hover: none) { .house-actions .btn.primary:hover:not(:disabled) { background: var(--acc); color: var(--acc-ink); } }
 
 </style>
 <canvas id="c" aria-label="Residencial Valle de San Sebastián en 3D"></canvas>
