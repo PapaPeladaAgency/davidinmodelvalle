@@ -966,3 +966,4 @@ table.compare th[scope], table.compare tbody th { color: var(--muted); font-weig
 .promises b { white-space: nowrap; min-width: 30px; }
 .promises b { display: inline-block; }
 .st-chip::before { content: none; }
+input, select, textarea { box-sizing: border-box; max-width: 100%; }
