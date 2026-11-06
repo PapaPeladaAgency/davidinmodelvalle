@@ -45,9 +45,13 @@ const Motion = {
     let was = false;
     new MutationObserver(() => {
       const on = f.classList.contains('on');
-      if (was && !on && !this.reduced) { f.classList.add('out'); clearTimeout(f._t); f._t = setTimeout(() => f.classList.remove('out'), 750); }
-      if (on) f.classList.remove('out');
+      if (on === was) return; // solo actuar en cambios reales de 'on' (cambiar 'out' también dispara el observador)
       was = on;
+      // classList.remove reescribe el atributo aunque la clase no esté: verificar antes para no entrar en bucle
+      if (on) { if (f.classList.contains('out')) f.classList.remove('out'); return; }
+      if (this.reduced) return;
+      f.classList.add('out'); clearTimeout(f._t);
+      f._t = setTimeout(() => { if (f.classList.contains('out')) f.classList.remove('out'); }, 750);
     }).observe(f, { attributes: true, attributeFilter: ['class'] });
     const mark = f.querySelector('.fade-mark');
     const ent = App.enterHouse.bind(App), ext = App.exitHouse.bind(App);
