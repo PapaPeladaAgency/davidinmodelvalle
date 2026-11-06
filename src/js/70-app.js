@@ -362,38 +362,58 @@ const Shell = {
     await Thumbs.renderAll();
     try {
       const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'letter' });
-      const L = LANG === 'en', W = 216, x = 18; let y = 20;
-      doc.setFillColor(43, 63, 143); doc.rect(0, 0, W, 14, 'F');
-      doc.setTextColor(255); doc.setFontSize(12); doc.text('Valle de San Sebastián', x, 9.5);
-      doc.setFontSize(9); doc.text(L ? 'Quote · demo prototype' : 'Cotización · prototipo demostrativo', W - x, 9.5, { align: 'right' });
-      doc.setTextColor(20, 40, 58); y = 26;
-      doc.setFontSize(20); doc.text(`${L ? 'Lot' : 'Lote'} ${code}`, x, y); y += 7;
-      doc.setFontSize(10); doc.setTextColor(95, 107, 115);
-      doc.text(`${I.stage?.name || ''} · ${m ? `${m.name} · ${m.tagline || ''}` : (L ? 'Lot only' : 'Solo terreno')} · ${new Date().toLocaleDateString(L ? 'en-US' : 'es-SV')}`, x, y); y += 6;
-      const img = Thumbs.get(m?.id || 'A'); if (img) { doc.addImage(img, 'JPEG', x, y, 112, 70); }
-      let ry = y + 4; const rx = x + 120;
-      const row = (k, v, big) => { doc.setFontSize(9); doc.setTextColor(95, 107, 115); doc.text(k, rx, ry); doc.setFontSize(big ? 15 : 11); doc.setTextColor(20, 40, 58); doc.text(v, rx, ry + (big ? 7 : 5.5)); ry += big ? 15 : 12; };
-      row(L ? 'Home + lot' : 'Casa + terreno', money(price), true);
+      const L = LANG === 'en', W = 216, H = 279, x = 18, R = W - x; let y;
+      const INK = [18, 19, 21], MUT = [107, 107, 107], LINE = [220, 220, 216];
+      const lab = (s, lx, ly, o = {}) => { doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...MUT); doc.text(s.toUpperCase(), lx, ly, { charSpace: 0.9, ...o }); };
+      const hair = (ly, c = LINE, w = 0.2) => { doc.setDrawColor(...c); doc.setLineWidth(w); doc.line(x, ly, R, ly); };
+      const date = new Date().toLocaleDateString(L ? 'en-US' : 'es-SV');
+      // cabecera
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...INK);
+      doc.text('VALLE DE SAN SEBASTIÁN', x, 15, { charSpace: 1.4 });
+      lab(L ? 'Quote — demo prototype' : 'Cotización — prototipo demostrativo', R, 15, { align: 'right' });
+      hair(19, INK, 0.5);
+      // título
+      lab(`— ${L ? 'Lot' : 'Lote'}`, x, 31);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(30); doc.setTextColor(...INK); doc.text(code, x, 44);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5); doc.setTextColor(...MUT);
+      doc.text(`${I.stage?.name || ''}  ·  ${m ? `${m.name} · ${m.tagline || ''}` : (L ? 'Lot only' : 'Solo terreno')}  ·  ${date}`, x, 52);
+      y = 60;
+      const img = Thumbs.get(m?.id || 'A'); if (img) doc.addImage(img, 'JPEG', x, y, 112, 70);
+      // columna de datos
+      const rx = x + 120, rw = R - rx; let ry = y;
+      doc.setFillColor(...INK); doc.rect(rx, ry, rw, 24, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(170); doc.text((L ? 'Home + lot' : 'Casa + terreno').toUpperCase(), rx + 5, ry + 7, { charSpace: 0.9 });
+      doc.setFontSize(19); doc.setTextColor(255); doc.text(money(price), rx + 5, ry + 18); ry += 24;
+      const row = (k, v) => { lab(k, rx, ry + 8); doc.setFont('helvetica', 'bold'); doc.setFontSize(10.5); doc.setTextColor(...INK); doc.text(v, rx, ry + 14); ry += 17; doc.setDrawColor(...LINE); doc.setLineWidth(0.2); doc.line(rx, ry - 0.5, R, ry - 0.5); };
       row(L ? 'Lot area' : 'Área del terreno', `≈ ${I.area} m²`);
       if (m) row(L ? 'Built area' : 'Construcción', `${m.area} m² · ${m.bedrooms} ${L ? 'bed' : 'hab.'} · ${m.baths} ${L ? 'bath' : 'baño'}`);
       row(L ? 'Status' : 'Estado', this.stName(I.status));
-      y += 78;
-      doc.setFontSize(13); doc.setTextColor(20, 40, 58); doc.text(L ? 'Illustrative financing' : 'Financiamiento ilustrativo', x, y); y += 6;
-      doc.setFontSize(9.5);
+      y += 84;
+      // 01 · financiamiento
+      lab(`01 / ${L ? 'Illustrative financing' : 'Financiamiento ilustrativo'}`, x, y); y += 4; hair(y, INK, 0.5); y += 7;
       const heads = L ? ['Down payment', 'Term', 'Rate', 'Monthly payment'] : ['Prima', 'Plazo', 'Tasa', 'Cuota mensual'];
-      const cols = [x, x + 50, x + 90, x + 125];
-      doc.setTextColor(95, 107, 115); heads.forEach((h, i) => doc.text(h, cols.at(i), y)); y += 2; doc.setDrawColor(220); doc.line(x, y, W - x, y); y += 6;
-      doc.setTextColor(20, 40, 58);
+      const cols = [x, x + 62, x + 104, R];
+      heads.forEach((h, i) => lab(h, cols[i], y, i === 3 ? { align: 'right' } : {})); y += 3; hair(y); y += 7;
       for (const [dp, yr] of [[10, 15], [10, 20], [10, 25], [20, 20]]) {
         const c = UI.calcLoan(price, dp, yr, LOAN.rate);
-        [`${dp} % · ${money(c.down)}`, `${yr} ${L ? 'years' : 'años'}`, `${LOAN.rate} %`, money2(c.monthly)].forEach((v, i) => doc.text(v, cols.at(i), y)); y += 7;
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(...INK);
+        doc.text(`${dp} %  ·  ${money(c.down)}`, cols[0], y); doc.text(`${yr} ${L ? 'years' : 'años'}`, cols[1], y); doc.text(`${LOAN.rate} %`, cols[2], y);
+        doc.setFont('helvetica', 'bold'); doc.text(money2(c.monthly), cols[3], y, { align: 'right' });
+        y += 4; hair(y); y += 7;
       }
-      y += 4; doc.setFontSize(13); doc.text(L ? 'Next steps' : 'Próximos pasos', x, y); y += 6; doc.setFontSize(9.5);
+      y += 6;
+      // 02 · próximos pasos
+      lab(`02 / ${L ? 'Next steps' : 'Próximos pasos'}`, x, y); y += 4; hair(y, INK, 0.5); y += 8;
       [L ? 'Reserve online with a deposit of ' + money(App.project.deposit || 300) : 'Apartá en línea con un depósito de ' + money(App.project.deposit || 300),
        L ? 'Book a site visit or video call with your advisor' : 'Agendá una visita o videollamada con tu asesor',
-       L ? 'Get pre-qualified with the lender' : 'Precalificá con la entidad financiera'].forEach(s => { doc.text('• ' + s, x, y); y += 6; });
-      y += 4; doc.setFontSize(8); doc.setTextColor(120);
-      doc.text(doc.splitTextToSize(L ? 'Demo prototype. Prices, homes, lot numbers and rates are illustrative and do not constitute a commercial offer. Final terms are set by the developer and the lender.' : 'Prototipo demostrativo. Precios, viviendas, numeración de lotes y tasas son ilustrativos y no constituyen oferta comercial. Las condiciones finales las definen el desarrollador y la entidad financiera.', W - 2 * x), x, y);
+       L ? 'Get pre-qualified with the lender' : 'Precalificá con la entidad financiera'].forEach((s, i) => {
+        lab(String(i + 1).padStart(2, '0'), x, y); doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(...INK); doc.text(s, x + 12, y);
+        y += 4; hair(y); y += 7; });
+      // pie
+      hair(H - 26);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...MUT);
+      doc.text(doc.splitTextToSize(L ? 'Demo prototype. Prices, homes, lot numbers and rates are illustrative and do not constitute a commercial offer. Final terms are set by the developer and the lender.' : 'Prototipo demostrativo. Precios, viviendas, numeración de lotes y tasas son ilustrativos y no constituyen oferta comercial. Las condiciones finales las definen el desarrollador y la entidad financiera.', R - x - 40), x, H - 20);
+      lab(date, R, H - 20, { align: 'right' });
       const blob = doc.output('blob');
       Track.bump('pdf');
       const name = `cotizacion-${code}.pdf`;
