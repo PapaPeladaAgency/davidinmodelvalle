@@ -31,7 +31,7 @@ const Motion = {
       if (!load.hidden || this.reduced) return;
       const ex = document.createElement('div');
       ex.className = 'loading leaving'; ex.setAttribute('aria-hidden', 'true');
-      ex.innerHTML = '<div class="load-card"><div class="load-num">/100</div></div>';
+      ex.innerHTML = '<div class="load-card"><div class="load-num">100<small>%</small></div></div>';
       document.body.appendChild(ex);
       const drop = () => ex.isConnected && ex.parentNode.removeChild(ex);
       ex.addEventListener('animationend', drop, { once: true });
@@ -88,8 +88,30 @@ const Motion = {
     });
   },
 
+  // en la portada el proyecto se encuadra a un lado del texto (desplazando la vista de la cámara),
+  // y vuelve al centro con suavidad al entrar
+  heroFrame() {
+    const cam = App.camera; if (!cam) return;
+    let k = 0, raf = 0;
+    const target = () => (document.body.dataset.view ? 0 : 1);
+    const apply = () => {
+      const w = App.width, h = App.height, wide = w > 760;
+      if (k < 0.002) { if (cam.view && cam.view.enabled) cam.clearViewOffset(); return; }
+      cam.setViewOffset(w, h, wide ? -w * 0.2 * k : 0, wide ? 0 : h * 0.2 * k, w, h);
+    };
+    const step = () => {
+      const t = target(); k += (t - k) * (this.reduced ? 1 : 0.06); if (Math.abs(t - k) < 0.002) k = t;
+      apply(); raf = k !== t ? requestAnimationFrame(step) : 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(step); };
+    k = 1; apply();
+    new MutationObserver(kick).observe(document.body, { attributes: true, attributeFilter: ['data-view'] });
+    const rs = App.resize.bind(App); App.resize = () => { rs(); apply(); };
+  },
+
   init() {
     this.split($('.hero h1.split'));
+    const frame = () => (App.camera && App.width ? this.heroFrame() : setTimeout(frame, 150)); frame();
     this.hookLoader();
     this.hookCurtain();
     this.hookSheet();

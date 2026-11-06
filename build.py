@@ -8,7 +8,7 @@ THREE = 'https://cdn.jsdelivr.net/npm/three@0.165.0'
 html = f'''<title>Valle de San Sebastián</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&display=swap">
 <style>
 {read('src/styles.css')}
 </style>

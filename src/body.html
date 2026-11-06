@@ -59,27 +59,22 @@
 <button class="fab-ai" id="fabAI" hidden aria-label="Asistente con IA"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z"/></svg><span data-i18n="ai.btn">Asistente con IA</span></button>
 
 <section id="hero" class="hero">
-  <div class="hero-rail" aria-hidden="true"><span>Valle de San Sebastián — El Salvador</span></div>
   <div class="hero-inner">
-    <div class="hero-card">
-      <p class="eyebrow" data-i18n="hero.eyebrow">Vivienda de interés social · El Salvador</p>
-      <h1 class="split">Valle de San Sebastián</h1>
-      <p class="lede" data-i18n="hero.lede"></p>
-      <ul class="promises"><li><b>01</b><span data-i18n="hero.p1"></span></li><li><b>02</b><span data-i18n="hero.p2"></span></li><li><b>03</b><span data-i18n="hero.p3"></span></li></ul>
-      <div class="hero-cta">
-        <button class="btn primary xl" id="cta"><span data-i18n="hero.cta">Explorá Valle de San Sebastián en 3D</span><i class="arr" aria-hidden="true">→</i></button>
-        <button class="btn ghost-light" id="heroPlano" data-i18n="hero.plano">Ver plano original</button>
-      </div>
+    <p class="eyebrow"><i aria-hidden="true"></i><span data-i18n="hero.eyebrow">Vivienda de interés social · El Salvador</span></p>
+    <h1 class="split">Valle de San Sebastián</h1>
+    <p class="lede" data-i18n="hero.lede"></p>
+    <div class="hero-cta">
+      <button class="btn primary xl" id="cta"><span data-i18n="hero.cta">Explorá Valle de San Sebastián en 3D</span><i class="arr" aria-hidden="true">→</i></button>
+      <button class="btn ghost-light" id="heroPlano" data-i18n="hero.plano">Ver plano original</button>
     </div>
-    <div class="hero-side">
-      <span class="hero-num" aria-hidden="true">/3D</span>
-      <div class="hero-stats" id="heroStats"></div>
-      <p class="disclaimer" data-i18n="hero.disc"></p>
-    </div>
+    <ul class="promises"><li><span data-i18n="hero.p1"></span></li><li><span data-i18n="hero.p2"></span></li><li><span data-i18n="hero.p3"></span></li></ul>
+    <div class="hero-stats" id="heroStats"></div>
+    <p class="disclaimer" data-i18n="hero.disc"></p>
   </div>
+  <p class="hero-hint" aria-hidden="true">Vista en vivo del proyecto · 3D</p>
 </section>
 
-<div id="loading" class="loading"><div class="load-card"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="28" cy="11" r="5" fill="var(--sol)"/><path d="M2 32 Q12 20 20 27 T38 24 V38 H2Z" fill="var(--volcan)"/><path d="M9 26 L20 16 L31 26" fill="none" stroke="var(--anil)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="16" y="24" width="8" height="8" rx="1.2" fill="var(--anil)"/></svg><b>Valle de San Sebastián</b><div class="load-num" aria-hidden="true">/<span id="loadPct">00</span></div><div class="load-bar"><i id="loadBar"></i></div><p id="loadMsg" data-i18n="load.1">Preparando el residencial…</p></div><div class="marquee" aria-hidden="true"><div><span>Valle de San Sebastián — Vivienda — El Salvador — </span><span>Valle de San Sebastián — Vivienda — El Salvador — </span></div></div></div>
+<div id="loading" class="loading"><div class="load-card"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="28" cy="11" r="5" fill="var(--sol)"/><path d="M2 32 Q12 20 20 27 T38 24 V38 H2Z" fill="var(--volcan)"/><path d="M9 26 L20 16 L31 26" fill="none" stroke="var(--anil)" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/><rect x="16" y="24" width="8" height="8" rx="1.2" fill="var(--anil)"/></svg><b>Valle de San Sebastián</b><div class="load-num" aria-hidden="true"><span id="loadPct">00</span><small>%</small></div><div class="load-bar"><i id="loadBar"></i></div><p id="loadMsg" data-i18n="load.1">Preparando el residencial…</p></div></div>
 
 <!-- ======= Vista del residencial ======= -->
 <div id="siteUI">
