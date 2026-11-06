@@ -918,3 +918,7 @@ body[data-view="house"] .fab-ai { bottom: calc(110px + env(safe-area-inset-botto
 .stage-bar { width: 206px; }
 .stage-btn span, .stage-btn small { white-space: nowrap; }
 @media (max-width: 760px) { #lotPanel { top: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); max-height: 64%; } }
+/* cualquier botón que flota directo sobre el 3D lleva vidrio para leerse sobre cielo claro */
+#backToSite, .walk-actions .btn, .house-actions .btn:not(.primary), .lc-row .btn:not(.primary):not(.whats) { background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); border-color: var(--line); box-shadow: var(--shadow); }
+#backToSite:hover, .walk-actions .btn:hover { background: rgba(30,33,37,.85); }
+.model-pick { white-space: nowrap; }
