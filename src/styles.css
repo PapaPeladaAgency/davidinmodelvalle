@@ -927,3 +927,23 @@ body[data-view="house"] .fab-ai { bottom: calc(110px + env(safe-area-inset-botto
 .house-actions .btn.primary { background: var(--acc); border-color: var(--acc); color: var(--acc-ink); }
 .house-actions .btn.primary:hover:not(:disabled) { background: #f6c27a; }
 @media (hover: none) { .house-actions .btn.primary:hover:not(:disabled) { background: var(--acc); color: var(--acc-ink); } }
+@media (max-width: 760px) {
+  /* vivienda en teléfono: pila inferior sin solapes (acciones → decoración → modos) */
+  .house-actions { left: 8px; right: 8px; bottom: calc(34px + env(safe-area-inset-bottom, 0px)); gap: 6px; }
+  .decor { display: flex; flex-direction: row; align-items: center; gap: 6px; left: 8px; right: 8px; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); padding: 6px; overflow-x: auto; scrollbar-width: none; border-radius: 999px; max-width: none; }
+  .decor .chips { flex-wrap: nowrap; flex: none; }
+  .decor .decor-label { display: none; }
+  .decor .chip { padding: 6px 11px; }
+  .mode-switch { left: 8px; right: 8px; width: auto; transform: none; bottom: calc(138px + env(safe-area-inset-bottom, 0px)); }
+  #openHint { top: auto; bottom: calc(200px + env(safe-area-inset-bottom, 0px)); }
+  /* arriba: volver + título en una fila, modelo debajo */
+  .house-top { gap: 6px; }
+  #backToSite { padding: 8px 12px; }
+  .house-title { order: 2; flex: 1 1 0; min-width: 0; flex-basis: auto; padding: 6px 12px; }
+  .house-title strong { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .house-title span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .model-pick { order: 3; flex-basis: 100%; padding: 5px 10px; }
+  .model-pick select { flex: 1; max-width: none; }
+  .walk-where { top: calc(158px + env(safe-area-inset-top, 0px)); }
+}
+@media (max-width: 760px) { .house-title { flex: 1 1 0; flex-basis: 0; } }
