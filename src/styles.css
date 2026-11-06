@@ -914,3 +914,7 @@ body[data-view="house"] .fab-ai { bottom: calc(110px + env(safe-area-inset-botto
   .mini:hover, .model-card:hover, .room-tag:hover { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) { .split .w > span { transform: none; } #fade { transition: none; } }
+#lotPanel { bottom: auto; max-height: calc(100% - 170px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+.stage-bar { width: 206px; }
+.stage-btn span, .stage-btn small { white-space: nowrap; }
+@media (max-width: 760px) { #lotPanel { top: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); max-height: 64%; } }
